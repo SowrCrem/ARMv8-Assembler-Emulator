@@ -1,10 +1,1 @@
-/usr/lib/clion-2022.2.3/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/usr/lib/clion-2022.2.3/bin/ninja/linux/ninja -G Ninja -S /homes/vl522/armv8_47 -B /homes/vl522/armv8_47/cmake-build-debug
--- The C compiler identification is GNU 11.3.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done
--- Generating done
--- Build files have been written to: /homes/vl522/armv8_47/cmake-build-debug
+CMakeLists.txt not found in /homes/vl522/armv8_47 Select CMakeLists.txt
