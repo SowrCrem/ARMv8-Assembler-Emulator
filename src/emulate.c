@@ -2,32 +2,13 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+#include "register.h"
+#include "utils.h"
 
-#define NELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
-#define TERMINATE_INSTRUCTION
-
-typedef enum {ZR, PC, SP} specialRegisters;
-
-// The following 3 structs represent the registers
-
-struct generalRegister {
-    char name[15];
-    int mode;
-    uint64_t data[31];
-};
-
-struct specialRegister {
-    specialRegisters name;
-    uint64_t data;
-    int mode;
-};
-
-struct PSTATE {
-    bool N;
-    bool Z;
-    bool C;
-    bool v;
-};
+#define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
+#define TERMINATE_INSTRUCTION 0x8a000000
 
 // Puts the instructions stored in the binary file into an array
 void readFile(char* file, uint32_t data[]) {
@@ -67,15 +48,15 @@ uint32_t fetch() {
     return 0;
 };
 
-// Decodes 4-byte word into instruction
-uint32_t * decode(uint32_t instruction) {
-    // TO BE IMPLEMENTED
-    return 0;
+// Decodes 4-byte word into instruction by returning a number from 1 to 6 specifying the instruction type
+int decode(uint32_t instruction) {
+    uint32_t op0 = extractBits(instruction, 25, 28);
+
 }
 
 // Updates registers accordingly depending on the given instruction
 void execute(uint32_t instruction) {
-    // TO BE IMPLEMENTED
+    int instructionType = decode(instruction);
 }
 
 // Writes the states of the registers to an output file
@@ -86,7 +67,7 @@ void output() {
 int main( int argc, char **argv ) {
 
     // Declaring Array to store binary instructions
-    uint32_t memory[NELEMENTS];
+    uint32_t memory[NO_ELEMENTS];
 
     // Error checking for file existing as a program argument
     if( argc != 2 ) {
@@ -98,18 +79,16 @@ int main( int argc, char **argv ) {
     readFile(argv[1], memory);
 
     // Outputting contents of array storing binary file instructions
-
-    for (int i=0; i < NELEMENTS; i++) {
-        printf("%u\n", memory[i]);
-    }
+//
+//    for (int i=0; i < NO_ELEMENTS; i++) {
+//        printf("%u\n", memory[i]);
+//    }
 
     // Fetch Decode Execute Pipeline:
     uint32_t instruction = fetch();
-    decode(instruction);
-    while (instruction != 0x8a000000) {
+    while (instruction != TERMINATE_INSTRUCTION) {
         execute(instruction);
         instruction = fetch();
-        decode(instruction);
     }
 
     // Final writing of file
@@ -118,4 +97,3 @@ int main( int argc, char **argv ) {
     return 0;
 
 }
-
