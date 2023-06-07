@@ -9,6 +9,7 @@
 
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000
+#define NO_OP_INSTRUCTION 0xd503203f
 
 // Puts the instructions stored in the binary file into an array
 void readFile(char* file, uint32_t data[]) {
@@ -57,6 +58,10 @@ int decode(uint32_t instruction) {
 // Updates registers accordingly depending on the given instruction
 void execute(uint32_t instruction) {
     int instructionType = decode(instruction);
+
+    // No Operation - for option 6
+    uint64_t noop = readPC() + 4;
+    writePC64(noop, 64);
 }
 
 // Writes the states of the registers to an output file
