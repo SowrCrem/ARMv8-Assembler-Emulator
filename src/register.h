@@ -6,6 +6,11 @@
 #define ARMV8_47_REGISTER_H
 
 // Function Declaration
-
+uint64_t readGeneral(int regNum, int mode);
+void writeGeneral(int regNum,uint64_t data, int mode);
+uint64_t readPC();
+void writePC32(uint32_t data, int mode);
+void writePC64(uint64_t data, int mode);
+uint64_t readZR();
 
 #endif //ARMV8_47_REGISTER_H
