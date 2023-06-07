@@ -58,10 +58,30 @@ int decode(uint32_t instruction) {
 // Updates registers accordingly depending on the given instruction
 void execute(uint32_t instruction) {
     int instructionType = decode(instruction);
-
-    // No Operation - for option 6
-    uint64_t noop = readPC() + 4;
-    writePC64(noop, 64);
+    switch (instructionType) {
+        case 1:
+            dataProcessingImmediateInstruction(instruction);
+            break;
+        case 2:
+            dataProcessingRegisterInstruction(instruction);
+            break;
+        case 3:
+            singleDataTransferInstruction(instruction);
+            break;
+        case 4:
+            loadLiteral(instruction);
+            break;
+        case 5:
+            branch(instruction);
+            break;
+        case 6: {
+            // No Operation - for option 6
+            uint64_t noop = readPC() + 4;
+            writePC64(noop, 64);
+        }
+        default:
+            break;
+    }
 }
 
 // Writes the states of the registers to an output file
