@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #define NELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
+#define TERMINATE_INSTRUCTION
 
 typedef enum {ZR, PC, SP} specialRegisters;
 
@@ -12,13 +13,13 @@ typedef enum {ZR, PC, SP} specialRegisters;
 struct generalRegister {
     char name[15];
     int mode;
-    uint32_t data;
+    uint64_t data[31];
 };
 
 struct specialRegister {
     specialRegisters name;
-    uint32_t address;
-    int mode
+    uint64_t data;
+    int mode;
 };
 
 struct PSTATE {
@@ -63,11 +64,13 @@ void readFile(char* file, uint32_t data[]) {
 // Retrieves next 4-byte instruction from memory
 uint32_t fetch() {
     // TO BE IMPLEMENTED
+    return 0;
 };
 
 // Decodes 4-byte word into instruction
 uint32_t * decode(uint32_t instruction) {
     // TO BE IMPLEMENTED
+    return 0;
 }
 
 // Updates registers accordingly depending on the given instruction
@@ -103,7 +106,7 @@ int main( int argc, char **argv ) {
     // Fetch Decode Execute Pipeline:
     uint32_t instruction = fetch();
     decode(instruction);
-    while (instruction != 0x8z000000) {
+    while (instruction != 0x8a000000) {
         execute(instruction);
         instruction = fetch();
         decode(instruction);
