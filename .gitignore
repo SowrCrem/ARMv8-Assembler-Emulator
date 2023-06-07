@@ -41,3 +41,4 @@ src/bootcode.bin
 #ignore ide-specific files
 .idea
 cmake-build-debug
+CMakeLists.txt
