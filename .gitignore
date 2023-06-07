@@ -35,3 +35,4 @@ assemble
 
 #ignore ide-specific files
 .idea
+cmake-build-debug
