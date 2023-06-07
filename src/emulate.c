@@ -12,12 +12,12 @@ typedef enum {ZR, PC, SP} specialRegisters;
 struct generalRegister {
     char name[15];
     int mode;
-    int data[64];
+    uint32_t data;
 };
 
 struct specialRegister {
     specialRegisters name;
-    int address;
+    uint32_t address;
     int mode
 };
 
@@ -29,7 +29,7 @@ struct PSTATE {
 };
 
 // Puts the instructions stored in the binary file into an array
-void readFile(char* file, long data[]) {
+void readFile(char* file, uint32_t data[]) {
     // Open the file
     FILE *fp = fopen( file, "rb" );
 
@@ -49,7 +49,7 @@ void readFile(char* file, long data[]) {
     rewind(fp);
 
     // Reading binary file
-    fread( data, sizeof(long), NELEMENTS, fp);
+    fread( data, sizeof(uint32_t), fileLen/4, fp);
 
     if( ferror(fp) ) {
         fprintf( stderr, "Error occurred reading from output.txt\n" );
@@ -61,17 +61,17 @@ void readFile(char* file, long data[]) {
 }
 
 // Retrieves next 4-byte instruction from memory
-long fetch() {
+uint32_t fetch() {
     // TO BE IMPLEMENTED
 };
 
 // Decodes 4-byte word into instruction
-long * decode(long instruction) {
+uint32_t * decode(uint32_t instruction) {
     // TO BE IMPLEMENTED
 }
 
 // Updates registers accordingly depending on the given instruction
-void execute(long instruction) {
+void execute(uint32_t instruction) {
     // TO BE IMPLEMENTED
 }
 
@@ -83,7 +83,7 @@ void output() {
 int main( int argc, char **argv ) {
 
     // Declaring Array to store binary instructions
-    long memory[NELEMENTS];
+    uint32_t memory[NELEMENTS];
 
     // Error checking for file existing as a program argument
     if( argc != 2 ) {
@@ -95,14 +95,13 @@ int main( int argc, char **argv ) {
     readFile(argv[1], memory);
 
     // Outputting contents of array storing binary file instructions
-    /*
+
     for (int i=0; i < NELEMENTS; i++) {
-        printf("%ld\n", data[i]);
+        printf("%u\n", memory[i]);
     }
-    */
 
     // Fetch Decode Execute Pipeline:
-    long instruction = fetch();
+    uint32_t instruction = fetch();
     decode(instruction);
     while (instruction != 0x8z000000) {
         execute(instruction);
