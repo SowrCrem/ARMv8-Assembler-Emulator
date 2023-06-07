@@ -49,7 +49,7 @@ uint32_t fetch() {
     return 0;
 };
 
-// Decodes 4-byte word into instruction by returning a number from 1 to 6 specifying the instruction type
+// Decodes 4-byte word into instruction by returning a number from 0 to 5 specifying the instruction type
 int decode(uint32_t instruction) {
     uint32_t op0 = extractBits(instruction, 25, 28);
 
