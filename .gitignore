@@ -24,6 +24,11 @@ assemble
 #ignore junk files from compiling Java code
 *.class
 
+#ignore test-specific files
+src/.cbuild
+src/add01.s
+src/bootcode.bin
+
 #ignore other junk files
 *.backup
 *.kate-swp
