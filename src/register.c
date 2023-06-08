@@ -124,13 +124,20 @@ uint64_t readZR() {
     return 0;
 };
 
+bool readN() {
+    return pstate.N;
+}
+
 void writeN(bool val) {
     if (val) {
         pstate.N = true;
     } else {
         pstate.N = false;
     }
+}
 
+bool readZ() {
+    return pstate.Z;
 }
 
 void writeZ(bool val) {
@@ -141,12 +148,20 @@ void writeZ(bool val) {
     }
 }
 
+bool readC() {
+    return pstate.C;
+}
+
 void writeC(bool val) {
     if (val) {
         pstate.C = true;
     } else {
         pstate.C = false;
     }
+}
+
+bool readV() {
+    return pstate.V;
 }
 
 void writeV(bool val) {

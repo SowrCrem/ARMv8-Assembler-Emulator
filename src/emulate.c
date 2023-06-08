@@ -44,9 +44,12 @@ void readFile(char* file, uint32_t data[]) {
 }
 
 // Retrieves next 4-byte instruction from memory
-uint32_t fetch(uint32_t memory[]) {
+uint32_t fetch(const uint32_t memory[]) {
+    // Read PC register
     uint32_t programCounter = readPC();
+    // Dereference the pointer to access the pointed instruction in memory
     uint32_t instruction = *(uint32_t*)(memory + programCounter);
+    // Increment the PC
     writePC32(programCounter + 4, 32);
     return instruction;
 };
