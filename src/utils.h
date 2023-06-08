@@ -7,6 +7,6 @@
 
 // Function Declaration
 uint32_t extractBits(uint32_t instr, int startIndex, int endIndex);
-bool msb(uint32_t instr);
+bool getMSB(uint32_t instr);
 
 #endif //ARMV8_47_UTILS_H

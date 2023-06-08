@@ -31,7 +31,7 @@ bitsPair splitBits(uint32_t bits, int splitIndex) {
     return splitted;
 }
 
-bool msb(uint32_t instr) {
+bool getMSB(uint32_t instr) {
     return getBit(instr, 31);
 }
 
