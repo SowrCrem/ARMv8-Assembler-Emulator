@@ -22,11 +22,11 @@ void bit_logic(uint32_t inst) {
 }
 
 void choose(uint32_t instruction) {
-    bool m_value = msb(instruction << 3);
+    bool m_value = getMSB(instruction << 3);
     if (m_value) {
         multiply(instruction);
     } else {
-        bool opr_value = msb(instruction << 7);
+        bool opr_value = getMSB(instruction << 7);
         if (opr_value) {
             arithmetic(instruction);
         } else {

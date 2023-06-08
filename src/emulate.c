@@ -69,16 +69,16 @@ void execute(uint32_t instruction) {
     int instructionType = decode(instruction);
     switch (instructionType) {
         case 1:
-            dataProcessingImmediateInstruction(instruction);
+            // dataProcessingImmediateInstruction(instruction);
             break;
         case 2:
-            dataProcessingRegisterInstruction(instruction);
+            // dataProcessingRegisterInstruction(instruction);
             break;
         case 3:
             singleDataTransfer(instruction);
             break;
         case 4:
-            loadLiteral(instruction);
+            // loadLiteral(instruction);
             break;
         case 5:
             branch(instruction);
