@@ -98,6 +98,7 @@ void output() {
 
 int main( int argc, char **argv ) {
 
+    construct();
     // Error checking for file existing as a program argument
     if( argc != 2 ) {
         fprintf( stderr, "Usage: ./emulate filename!\n" );

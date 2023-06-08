@@ -66,7 +66,7 @@ bool matchesPattern(uint32_t bits, const char pattern[]) {
     return true;
 }
 
-int main() {
-    bool match = matchesPattern(10, "10X0");
-    printf("\n%d", match);
-}
+//int main() {
+//    bool match = matchesPattern(10, "10X0");
+//    printf("\n%d", match);
+//}
