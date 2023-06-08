@@ -61,31 +61,30 @@ uint32_t ror32(uint32_t value, uint32_t shift) {
     return (value >> shift) | (value << (num_bits - shift));
 }
 
+/****************************************************************************************************************/
 
-void arithmetic(uint32_t inst) {
-
-}
-
-void bit_logic(uint32_t inst) {
+void arithmetic(uint32_t instruction) {
 
 }
 
-void multiply(uint32_t inst) {
+void bit_logic(uint32_t instruction) {
 
 }
 
-void choose(uint32_t instruction) {
-    bool m_value = getMSB(instruction << 3);
-    if (m_value) {
+void multiply(uint32_t instruction) {
+
+}
+
+void dataProcessRegister(uint32_t instruction) {
+    bool m1 = getMSB(instruction << 3);
+    if (m1 == 1) {
         multiply(instruction);
-    } else {
-        bool opr_value = getMSB(instruction << 7);
-        if (opr_value) {
+    } else {    // m1 = 0;
+        bool opr1 = getMSB(instruction << 7);
+        if (opr1 == 1) {
             arithmetic(instruction);
-        } else {
+        } else {    //opr1 = 0
             bit_logic(instruction);
         }
     }
-
-    /* code */
 }
