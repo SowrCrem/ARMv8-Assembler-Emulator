@@ -7,8 +7,13 @@
 #include "register.h"
 #include "utils.h"
 
+// Instruction files
+#include "singleDataTransfer.h"
+#include "dataProcessingRegister.h"
+#include "branch.h"
+
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
-#define TERMINATE_INSTRUCTION 0x8a000000
+#define TERMINATE_INSTRUCTION 0x8a000000    // AND x0, x0, x0
 #define NO_OP_INSTRUCTION 0xd503203f
 
 // Puts the instructions stored in the binary file into an array
@@ -49,8 +54,6 @@ uint32_t fetch(const uint32_t memory[]) {
     uint32_t programCounter = readPC();
     // Dereference the pointer to access the pointed instruction in memory
     uint32_t instruction = *(uint32_t*)(memory + programCounter);
-    // Increment the PC
-    writePC32(programCounter + 4, 32);
     return instruction;
 };
 
@@ -89,11 +92,14 @@ int decode(uint32_t instruction) {
 //        default:
 //            break;
 //    }
+//
+//    // Increment the PC after executing instruction
+//    writePC32(readPC() + 4, 32);
 //}
 
 // Writes the states of the registers to an output file
 void output() {
-    // TO BE IMPLEMENTED
+    // TO BE IMPLEMENTED - P16
 }
 
 int main( int argc, char **argv ) {

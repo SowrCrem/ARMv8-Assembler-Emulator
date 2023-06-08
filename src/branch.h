@@ -6,6 +6,6 @@
 #define ARMV8_47_BRANCH_H
 
 // Function Declaration
-
+void branch(uint32_t instruction);
 
 #endif //ARMV8_47_BRANCH_H
