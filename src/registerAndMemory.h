@@ -5,6 +5,12 @@
 #ifndef ARMV8_47_REGISTERANDMEMORY_H
 #define ARMV8_47_REGISTERANDMEMORY_H
 
+#include <stdbool.h>
+#include <string.h>
+#include "utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 // Function Declaration
 uint64_t readGeneral(int regNum, int mode);
 void writeGeneral(int regNum,uint64_t data, int mode);

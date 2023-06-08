@@ -7,8 +7,6 @@
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <stdint.h>
 
 #define NO_GENERAL_REGISTERS 31
 #define NO_ELEMENTS 200000000000000000//((int) pow(2,15)) // This constant is used to store the size of memory
