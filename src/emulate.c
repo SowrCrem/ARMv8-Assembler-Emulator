@@ -53,77 +53,76 @@ uint32_t fetch(uint32_t memory[]) {
 
 // Decodes 4-byte word into instruction by returning a number from 0 to 5 specifying the instruction type
 int decode(uint32_t instruction) {
-    uint32_t op0 = extractBits(instruction, 25, 28);
-
     if (instruction == NO_OP_INSTRUCTION) {
         return 6;
     }
+    uint32_t op0 = extractBits(instruction, 25, 28);
 }
 
 // Updates registers accordingly depending on the given instruction
-void execute(uint32_t instruction) {
-    int instructionType = decode(instruction);
-    switch (instructionType) {
-        case 1:
-            dataProcessingImmediateInstruction(instruction);
-            break;
-        case 2:
-            dataProcessingRegisterInstruction(instruction);
-            break;
-        case 3:
-            singleDataTransferInstruction(instruction);
-            break;
-        case 4:
-            loadLiteral(instruction);
-            break;
-        case 5:
-            branch(instruction);
-            break;
-        case 6: {
-            // No Operation - for option 6
-            uint64_t noop = readPC() + 4;
-            writePC64(noop, 64);
-        }
-        default:
-            break;
-    }
-}
+//void execute(uint32_t instruction) {
+//    int instructionType = decode(instruction);
+//    switch (instructionType) {
+//        case 1:
+//            dataProcessingImmediateInstruction(instruction);
+//            break;
+//        case 2:
+//            dataProcessingRegisterInstruction(instruction);
+//            break;
+//        case 3:
+//            singleDataTransferInstruction(instruction);
+//            break;
+//        case 4:
+//            loadLiteral(instruction);
+//            break;
+//        case 5:
+//            branch(instruction);
+//            break;
+//        case 6: {
+//            // No Operation - for option 6
+//            uint64_t noop = readPC() + 4;
+//            writePC64(noop, 64);
+//        }
+//        default:
+//            break;
+//    }
+//}
 
 // Writes the states of the registers to an output file
 void output() {
     // TO BE IMPLEMENTED
 }
 
-int main( int argc, char **argv ) {
-
-    // Declaring Array to store binary instructions
-    uint32_t memory[NO_ELEMENTS];
-
-    // Error checking for file existing as a program argument
-    if( argc != 2 ) {
-        fprintf( stderr, "Usage: ./emulate filename!\n" );
-        exit(1);
-    }
-
-
-    readFile(argv[1], memory);
-
-    // Outputting contents of array storing binary file instructions
+//int main( int argc, char **argv ) {
 //
-//    for (int i=0; i < NO_ELEMENTS; i++) {
-//        printf("%u\n", memory[i]);
+//    // Declaring Array to store binary instructions
+//    uint32_t memory[NO_ELEMENTS];
+//
+//    // Error checking for file existing as a program argument
+//    if( argc != 2 ) {
+//        fprintf( stderr, "Usage: ./emulate filename!\n" );
+//        exit(1);
 //    }
-
-    // Fetch Decode Execute Pipeline:
-    uint32_t instruction = fetch(memory);
-    while (instruction != TERMINATE_INSTRUCTION) {
-        execute(instruction);
-        instruction = fetch(memory);
-    }
-
-    // Final writing of file
-    output();
-
-    return 0;
-
-}
+//
+//
+//    readFile(argv[1], memory);
+//
+//    // Outputting contents of array storing binary file instructions
+////
+////    for (int i=0; i < NO_ELEMENTS; i++) {
+////        printf("%u\n", memory[i]);
+////    }
+//
+//    // Fetch Decode Execute Pipeline:
+//    uint32_t instruction = fetch(memory);
+//    while (instruction != TERMINATE_INSTRUCTION) {
+//        // execute(instruction);
+//        instruction = fetch(memory);
+//    }
+//
+//    // Final writing of file
+//    output();
+//
+//    return 0;
+//
+//}
