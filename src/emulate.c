@@ -6,6 +6,7 @@
 #include <string.h>
 #include "register.h"
 #include "utils.h"
+#include "singleDataTransferInstruction.h"
 
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000
@@ -63,33 +64,33 @@ int decode(uint32_t instruction) {
 }
 
 // Updates registers accordingly depending on the given instruction
-//void execute(uint32_t instruction) {
-//    int instructionType = decode(instruction);
-//    switch (instructionType) {
-//        case 1:
-//            dataProcessingImmediateInstruction(instruction);
-//            break;
-//        case 2:
-//            dataProcessingRegisterInstruction(instruction);
-//            break;
-//        case 3:
-//            singleDataTransferInstruction(instruction);
-//            break;
-//        case 4:
-//            loadLiteral(instruction);
-//            break;
-//        case 5:
-//            branch(instruction);
-//            break;
-//        case 6: {
-//            // No Operation - for option 6
-//            uint64_t noop = readPC() + 4;
-//            writePC64(noop, 64);
-//        }
-//        default:
-//            break;
-//    }
-//}
+void execute(uint32_t instruction) {
+    int instructionType = decode(instruction);
+    switch (instructionType) {
+        case 1:
+            dataProcessingImmediateInstruction(instruction);
+            break;
+        case 2:
+            dataProcessingRegisterInstruction(instruction);
+            break;
+        case 3:
+            singleDataTransfer(instruction);
+            break;
+        case 4:
+            loadLiteral(instruction);
+            break;
+        case 5:
+            branch(instruction);
+            break;
+        case 6: {
+            // No Operation - for option 6
+            uint64_t noop = readPC() + 4;
+            writePC64(noop, 64);
+        }
+        default:
+            break;
+    }
+}
 
 // Writes the states of the registers to an output file
 void output() {
