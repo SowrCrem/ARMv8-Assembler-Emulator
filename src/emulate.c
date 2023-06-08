@@ -4,12 +4,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include "registerAndMemory.h"
 #include "utils.h"
+#include "registerAndMemory.h"
 #include "singleDataTransferInstruction.h"
+#include "dataProcessingRegister.h"
+#include "branch.h"
 
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
-#define TERMINATE_INSTRUCTION 0x8a000000
+#define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
 #define NO_OP_INSTRUCTION 0xd503203f
 
 // Puts the instructions stored in the binary file into an array
@@ -50,15 +52,13 @@ uint32_t fetch(const uint32_t memory[]) {
     uint32_t programCounter = readPC();
     // Dereference the pointer to access the pointed instruction in memory
     uint32_t instruction = *(uint32_t*)(memory + programCounter);
-    // Increment the PC
-    writePC32(programCounter + 4, 32);
     return instruction;
 };
 
 // Decodes 4-byte word into instruction by returning a number from 0 to 5 specifying the instruction type
 int decode(uint32_t instruction) {
     if (instruction == NO_OP_INSTRUCTION) {
-        return 6;
+        return -1;   // nop no longer a number: it is default case in execute switch statement
     }
     uint32_t op0 = extractBits(instruction, 25, 28);
 }
@@ -82,14 +82,13 @@ void execute(uint32_t instruction) {
         case 5:
             branch(instruction);
             break;
-        case 6: {
-            // No Operation - for option 6
-            uint64_t noop = readPC() + 4;
-            writePC64(noop, 64);
-        }
-        default:
+        default:    // nop - No Operation - skips operation
             break;
     }
+
+    // Increment the PC after executing instruction
+    writePC32(readPC() + 4, 32);
+
 }
 
 // Writes the states of the registers to an output file
