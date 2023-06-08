@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include "utils.h"
 
 typedef struct {
@@ -55,7 +54,7 @@ const char* bitsToString(uint32_t value, int length) {
     return binaryString;
 }
 
-// Determines whether the given bits matches a given string pattern, including dontcares ("X"s)
+// Determines whether the given bits match a given string pattern, including dontcares ("X"s)
 bool matchesPattern(uint32_t bits, const char pattern[]) {
     int len = (int) strlen(pattern);
     const char* bitString = bitsToString(bits, len);
@@ -68,7 +67,8 @@ bool matchesPattern(uint32_t bits, const char pattern[]) {
     return true;
 }
 
-//int main() {
-//    bool match = matchesPattern(10, "10X0");
-//    printf("\n%d", match);
-//}
+// For Testing Purposes
+int main() {
+    bool match = matchesPattern(10, "10X0");
+    printf("\n%d", match);
+}
