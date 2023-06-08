@@ -93,36 +93,36 @@ void output() {
     // TO BE IMPLEMENTED
 }
 
-//int main( int argc, char **argv ) {
+int main( int argc, char **argv ) {
+
+    // Declaring Array to store binary instructions
+    uint32_t memory[NO_ELEMENTS];
+
+    // Error checking for file existing as a program argument
+    if( argc != 2 ) {
+        fprintf( stderr, "Usage: ./emulate filename!\n" );
+        exit(1);
+    }
+
+
+    readFile(argv[1], memory);
+
+    // Outputting contents of array storing binary file instructions
 //
-//    // Declaring Array to store binary instructions
-//    uint32_t memory[NO_ELEMENTS];
-//
-//    // Error checking for file existing as a program argument
-//    if( argc != 2 ) {
-//        fprintf( stderr, "Usage: ./emulate filename!\n" );
-//        exit(1);
+//    for (int i=0; i < NO_ELEMENTS; i++) {
+//        printf("%u\n", memory[i]);
 //    }
-//
-//
-//    readFile(argv[1], memory);
-//
-//    // Outputting contents of array storing binary file instructions
-////
-////    for (int i=0; i < NO_ELEMENTS; i++) {
-////        printf("%u\n", memory[i]);
-////    }
-//
-//    // Fetch Decode Execute Pipeline:
-//    uint32_t instruction = fetch(memory);
-//    while (instruction != TERMINATE_INSTRUCTION) {
-//        // execute(instruction);
-//        instruction = fetch(memory);
-//    }
-//
-//    // Final writing of file
-//    output();
-//
-//    return 0;
-//
-//}
+
+    // Fetch Decode Execute Pipeline:
+    uint32_t instruction = fetch(memory);
+    while (instruction != TERMINATE_INSTRUCTION) {
+        // execute(instruction);
+        instruction = fetch(memory);
+    }
+
+    // Final writing of file
+    output();
+
+    return 0;
+
+}
