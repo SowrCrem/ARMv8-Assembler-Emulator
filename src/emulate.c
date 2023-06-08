@@ -4,11 +4,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include "register.h"
 #include "utils.h"
+#include "registerAndMemory.h"
+#include "singleDataTransferInstruction.h"
+#include "dataProcessingRegister.h"
+#include "branch.h"
 
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
-#define TERMINATE_INSTRUCTION 0x8a000000
+#define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
 #define NO_OP_INSTRUCTION 0xd503203f
 enum instructionType {DP_IMMEDIATE=1, DP_REGISTER=2, SINGLE_DATA_TRANSFER=3, LOAD_LITERAL=4, BRANCH=5, NO_OP=6};
 
@@ -50,84 +53,99 @@ uint32_t fetch(const uint32_t memory[]) {
     uint32_t programCounter = readPC();
     // Dereference the pointer to access the pointed instruction in memory
     uint32_t instruction = *(uint32_t*)(memory + programCounter);
-    // Increment the PC
-    writePC32(programCounter + 4, 32);
     return instruction;
 };
 
 // Decodes 4-byte word into instruction by returning a number from 0 to 5 specifying the instruction type
 enum instructionType decode(uint32_t instruction) {
     if (instruction == NO_OP_INSTRUCTION) {
-        return NO_OP;
+        return -1;   // nop no longer a number: it is default case in execute switch statement
     }
     uint32_t op0 = extractBits(instruction, 25, 28);
-    if (matchesPattern(instruction, ""))
+    return 0;
 }
 
 // Updates registers accordingly depending on the given instruction
-//void execute(uint32_t instruction) {
-//    int instructionType = decode(instruction);
-//    switch (instructionType) {
-//        case 1:
-//            dataProcessingImmediateInstruction(instruction);
-//            break;
-//        case 2:
-//            dataProcessingRegisterInstruction(instruction);
-//            break;
-//        case 3:
-//            singleDataTransferInstruction(instruction);
-//            break;
-//        case 4:
-//            loadLiteral(instruction);
-//            break;
-//        case 5:
-//            branch(instruction);
-//            break;
-//        case 6: {
-//            // No Operation - for option 6
-//            uint64_t noop = readPC() + 4;
-//            writePC64(noop, 64);
-//        }
-//        default:
-//            break;
-//    }
-//}
+void execute(uint32_t instruction) {
+    int instructionType = decode(instruction);
+    switch (instructionType) {
+        case 1:
+            // dataProcessingImmediateInstruction(instruction);
+            break;
+        case 2:
+            // dataProcessingRegisterInstruction(instruction);
+            break;
+        case 3:
+            singleDataTransfer(instruction);
+            break;
+        case 4:
+            // loadLiteral(instruction);
+            break;
+        case 5:
+            branch(instruction);
+            break;
+        default:    // nop - No Operation - skips operation
+            break;
+    }
+
+    // Increment the PC after executing instruction
+    writePC32(readPC() + 4, 32);
+
+}
 
 // Writes the states of the registers to an output file
 void output() {
-    // TO BE IMPLEMENTED
+    printf("Registers:\n");
+    for (int i = 0; i < 30; ++i) {
+        printf("X%02d = %llx\n", i, readGeneral(i, 64));
+    }
+
+    printf("PC = %llx\n", readPC());
+    bool vars[] = {readN(), readZ(), readC(), readV()};
+    char letters[] = {'N', 'Z', 'C', 'V'};
+    int size =  sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
+
+    printf("PSTATE : ");
+    for (int i = 0; i < size; i++) {
+        if (vars[i]) {
+            printf("%c", letters[i]);
+        } else {
+            printf("-");
+        }
+    }
+    printf("\n");
+
+    printf("Non-zero memory:\n");
+    for (int i = 0; i < NO_ELEMENTS; ++i) {
+        if (readMemory(i) != 0) {
+            printf("%#x: %#x", i, readMemory(i));
+        }
+    }
 }
 
 int main( int argc, char **argv ) {
 
-    // Declaring Array to store binary instructions
-    uint32_t memory[NO_ELEMENTS];
-
+    construct();
     // Error checking for file existing as a program argument
     if( argc != 2 ) {
         fprintf( stderr, "Usage: ./emulate filename!\n" );
         exit(1);
     }
 
-
-    readFile(argv[1], memory);
-
-    // Outputting contents of array storing binary file instructions
-//
-//    for (int i=0; i < NO_ELEMENTS; i++) {
-//        printf("%u\n", memory[i]);
-//    }
+    readFile(argv[1], getMemory());
 
     // Fetch Decode Execute Pipeline:
-    uint32_t instruction = fetch(memory);
+    uint32_t instruction = fetch(getMemory());
     while (instruction != TERMINATE_INSTRUCTION) {
         // execute(instruction);
-        instruction = fetch(memory);
+        instruction = fetch(getMemory());
     }
 
     // Final writing of file
     output();
 
-    return 0;
+    // Free memory after termination
+    freeMemory();
 
+    return 0;
 }

@@ -4,16 +4,18 @@
 
 #include <stdbool.h>
 #include <string.h>
-#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
-uint64_t OULL;
+#include <math.h>
+#include <stdint.h>
+#include "utils.h"
 
 #define NO_GENERAL_REGISTERS 31
+#define NO_ELEMENTS pow(2,15) // This constant is used to store the size of memory
 
 typedef enum {ZR, PC, SP} specialRegisters;
 
-// The following 3 structs represent the registers
+// The following 3 structs represent the general and special registers
 
 struct generalRegister {
     int mode;
@@ -36,7 +38,7 @@ struct PSTATE {
 struct generalRegister constructGeneralRegister() {
     struct generalRegister generalRegisters;
     generalRegisters.mode = 64;
-    memset(generalRegisters.data, 0, NO_GENERAL_REGISTERS);
+    memset(generalRegisters.data, 0, NO_GENERAL_REGISTERS * sizeof(uint64_t));
     return generalRegisters;
 }
 
@@ -60,9 +62,20 @@ struct PSTATE constructPSTATE() {
     struct PSTATE pstate;
     pstate.C = false;
     pstate.N = false;
-    pstate.Z = false;
+    pstate.Z = true;
     pstate.V = false;
     return pstate;
+}
+
+// Modelling memory using malloc()
+uint32_t* memory;
+
+void initializeMemory() {
+    memory = (uint32_t*)malloc(NO_ELEMENTS * sizeof(uint32_t));
+    if (memory == NULL) {
+        printf("Error: Failed to allocate memory\n");
+        exit(1);
+    }
 }
 
 struct generalRegister generalRegisters;
@@ -70,22 +83,51 @@ struct specialRegister pc;
 struct specialRegister zr;
 struct PSTATE pstate;
 
-int main(void) {
+void construct(void) {
     // Constructs all the registers
     generalRegisters = constructGeneralRegister();
     pc = constructPC();
     zr = constructZR();
     pstate = constructPSTATE();
+    initializeMemory();
 }
 
-uint64_t readGeneral(int regNum, int mode) {
+uint32_t readMemory(uint32_t address) {
+    // returns data at address
+    if (address < NO_ELEMENTS) {
+        return memory[address];
+    } else {
+        printf("Error: Invalid memory address %d\n", address);
+        return 0;
+    }
+}
+
+void writeMemory(uint32_t data, uint32_t address) {
+    // write data to address
+    if (address < NO_ELEMENTS) {
+        memory[address] = data;
+    } else {
+        printf("Error: Invalid memory address %d\n", address);
+    }
+}
+
+uint32_t* getMemory() {
+    // returns basal pointer to array
+    return memory;
+}
+
+void freeMemory() {
+    free(memory);
+}
+
+uint64_t readGeneral(uint64_t regNum, int mode) {
     return generalRegisters.data[regNum];
 };
 
-void writeGeneral(int regNum,uint64_t data, int mode) {
+void writeGeneral(uint64_t regNum, uint64_t data, int mode) {
     pc.mode = mode;
     if (pc.mode == 32) {
-        generalRegisters.data[regNum] = (data >> 32) | OULL;
+        generalRegisters.data[regNum] = (data >> 32) | 0ULL;
     } else {
         generalRegisters.data[regNum] = data;
     }
@@ -100,12 +142,8 @@ uint64_t readPC() {
 
 void writePC32(uint32_t data, int mode) {
     pc.mode = mode;
-    if (pc.mode == 32) {
-        pc.data = (data >> 32) | OULL;
-    } else {
-        pc.data = data;
-    }
-};
+    pc.data = data;
+}
 
 void writePC64(uint64_t data, int mode) {
     if (mode == 64 && pc.mode == 32)  {
@@ -114,7 +152,7 @@ void writePC64(uint64_t data, int mode) {
     }
     pc.mode = mode;
     if (pc.mode == 32) {
-        pc.data = (data >> 32) | OULL;
+        pc.data = (data >> 32) | 0ULL;
     } else {
         pc.data = data;
     }

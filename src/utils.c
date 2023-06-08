@@ -1,8 +1,9 @@
-#include <stdint.h>
-#include "utils.h"
-#include <string.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdbool.h>
 #include <stdlib.h>
+#include "utils.h"
 
 typedef struct {
     uint32_t bits1;
@@ -33,8 +34,8 @@ bitsPair splitBits(uint32_t bits, int splitIndex) {
     return splitted;
 }
 
-// Returns the most significant bit
-bool msb(uint32_t instr) {
+
+bool getMSB(uint32_t instr) {
     return getBit(instr, 31);
 }
 
@@ -66,7 +67,7 @@ bool matchesPattern(uint32_t bits, const char pattern[]) {
     return true;
 }
 
-int main() {
-    bool match = matchesPattern(10, "10X0");
-    printf("\n%d", match);
-}
+//int main() {
+//    bool match = matchesPattern(10, "10X0");
+//    printf("\n%d", match);
+//}
