@@ -44,15 +44,20 @@ void readFile(char* file, uint32_t data[]) {
 }
 
 // Retrieves next 4-byte instruction from memory
-uint32_t fetch() {
-    // TO BE IMPLEMENTED
-    return 0;
+uint32_t fetch(uint32_t memory[]) {
+    uint32_t programCounter = readPC();
+    uint32_t instruction = *(uint32_t*)(memory + programCounter);
+    writePC32(programCounter + 4, 32);
+    return instruction;
 };
 
 // Decodes 4-byte word into instruction by returning a number from 0 to 5 specifying the instruction type
 int decode(uint32_t instruction) {
     uint32_t op0 = extractBits(instruction, 25, 28);
 
+    if (instruction == NO_OP_INSTRUCTION) {
+        return 6;
+    }
 }
 
 // Updates registers accordingly depending on the given instruction
@@ -110,10 +115,10 @@ int main( int argc, char **argv ) {
 //    }
 
     // Fetch Decode Execute Pipeline:
-    uint32_t instruction = fetch();
+    uint32_t instruction = fetch(memory);
     while (instruction != TERMINATE_INSTRUCTION) {
         execute(instruction);
-        instruction = fetch();
+        instruction = fetch(memory);
     }
 
     // Final writing of file
