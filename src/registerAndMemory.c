@@ -42,14 +42,14 @@ struct PSTATE {
 
 struct memory constructMemory() {
     struct memory memory;
-    memset(memory.memory, 0, NO_GENERAL_REGISTERS);
+    memset(memory.memory, 0, NO_ELEMENTS * sizeof(uint32_t));
     return memory;
 }
 
 struct generalRegister constructGeneralRegister() {
     struct generalRegister generalRegisters;
     generalRegisters.mode = 64;
-    memset(generalRegisters.data, 0, NO_GENERAL_REGISTERS);
+    memset(generalRegisters.data, 0, NO_GENERAL_REGISTERS * sizeof(uint64_t));
     return generalRegisters;
 }
 
@@ -109,7 +109,7 @@ uint64_t readGeneral(int regNum, int mode) {
     return generalRegisters.data[regNum];
 };
 
-void writeGeneral(int regNum,uint64_t data, int mode) {
+void writeGeneral(uint32_t regNum, uint64_t data, int mode) {
     pc.mode = mode;
     if (pc.mode == 32) {
         generalRegisters.data[regNum] = (data >> 32) | 0ULL;

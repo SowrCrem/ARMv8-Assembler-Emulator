@@ -61,6 +61,7 @@ int decode(uint32_t instruction) {
         return -1;   // nop no longer a number: it is default case in execute switch statement
     }
     uint32_t op0 = extractBits(instruction, 25, 28);
+    return 0;
 }
 
 // Updates registers accordingly depending on the given instruction
