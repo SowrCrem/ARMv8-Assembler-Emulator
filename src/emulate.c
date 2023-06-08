@@ -99,7 +99,7 @@ void execute(uint32_t instruction) {
         case BRANCH:
             branch(instruction);
             break;
-        default:    // nop - No Operation - skips operation
+        case NOP:    // nop - No Operation - skips operation
             break;
     }
 
