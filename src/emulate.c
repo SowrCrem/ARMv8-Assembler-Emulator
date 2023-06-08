@@ -13,7 +13,7 @@
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
 #define NO_OP_INSTRUCTION 0xd503203f
-enum instructionType {DP_IMMEDIATE=1, DP_REGISTER=2, SINGLE_DATA_TRANSFER=3, LOAD_LITERAL=4, BRANCH=5, NO_OP=6};
+enum instructionType {NOP=-1, UNRECOGNISED=0, DP_IMMEDIATE=1, DP_REGISTER=2, SINGLE_DATA_TRANSFER=3, LOAD_LITERAL=4, BRANCH=5};
 
 // Puts the instructions stored in the binary file into an array
 void readFile(char* file, uint32_t data[]) {
@@ -36,7 +36,7 @@ void readFile(char* file, uint32_t data[]) {
     rewind(fp);
 
     // Reading binary file
-    fread( data, sizeof(uint32_t), fileLen/4, fp);
+    fread(data, sizeof(uint32_t), fileLen/4, fp);
 
     if (ferror(fp)) {
         fprintf( stderr, "Error occurred reading from output.txt\n" );
@@ -56,32 +56,47 @@ uint32_t fetch(const uint32_t memory[]) {
     return instruction;
 };
 
-// Decodes 4-byte word into instruction by returning a number from 0 to 5 specifying the instruction type
+// Decodes 4-byte word into instruction by returning the instruction type
 enum instructionType decode(uint32_t instruction) {
     if (instruction == NO_OP_INSTRUCTION) {
-        return -1;   // nop no longer a number: it is default case in execute switch statement
+        return NOP;
     }
     uint32_t op0 = extractBits(instruction, 25, 28);
-    return 0;
+    if (matchesPattern(op0, "100X")) {
+        return DP_IMMEDIATE;
+    }
+    if (matchesPattern(op0, "X101")) {
+        return DP_REGISTER;
+    }
+    if (matchesPattern(op0, "X1X0")) {
+        if (getMsb(instruction)) {
+            return SINGLE_DATA_TRANSFER;
+        }
+        return LOAD_LITERAL;
+    }
+    if (matchesPattern(op0, "101X")) {
+        return BRANCH;
+    }
+        return UNRECOGNISED;
 }
 
 // Updates registers accordingly depending on the given instruction
 void execute(uint32_t instruction) {
     int instructionType = decode(instruction);
     switch (instructionType) {
-        case 1:
+        case DP_IMMEDIATE:
             // dataProcessingImmediateInstruction(instruction);
             break;
-        case 2:
+        case DP_REGISTER:
             // dataProcessingRegisterInstruction(instruction);
             break;
-        case 3:
+        case SINGLE_DATA_TRANSFER:
             singleDataTransfer(instruction);
             break;
-        case 4:
+        case LOAD_LITERAL:
             // loadLiteral(instruction);
             break;
-        case 5:
+        case BRANCH:
             branch(instruction);
             break;
         default:    // nop - No Operation - skips operation
@@ -127,7 +142,7 @@ int main( int argc, char **argv ) {
 
     construct();
     // Error checking for file existing as a program argument
-    if( argc != 2 ) {
+    if (argc != 2) {
         fprintf( stderr, "Usage: ./emulate filename!\n" );
         exit(1);
     }
