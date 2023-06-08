@@ -3,8 +3,11 @@
 //
 
 #include <stdio.h>
+#include <stdint.h>
 #include "branch.h"
+#include "utils.c"
 
-int main( void ) {
+void branch( uint32_t instruction ) {
     // Branch instructions modify the PC
+
 }
