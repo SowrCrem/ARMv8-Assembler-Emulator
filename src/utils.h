@@ -2,6 +2,7 @@
 #define ARMV8_47_UTILS_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // Function Declaration
 extern uint32_t extractBits(uint32_t instr, int startIndex, int endIndex);
