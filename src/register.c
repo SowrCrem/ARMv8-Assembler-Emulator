@@ -126,33 +126,33 @@ uint64_t readZR() {
 
 void writeN(bool val) {
     if (val) {
-        PSTATE.N = true;
+        pstate.N = true;
     } else {
-        PSTATE.N = false
+        pstate.N = false;
     }
 
 }
 
 void writeZ(bool val) {
     if (val) {
-        PSTATE.Z = true;
+        pstate.Z = true;
     } else {
-        PSTATE.Z = false;
+        pstate.Z = false;
     }
 }
 
 void writeC(bool val) {
     if (val) {
-        PSTATE.C = true;
+        pstate.C = true;
     } else {
-        PSTATE.C = false;
+        pstate.C = false;
     }
 }
 
 void writeV(bool val) {
     if (val) {
-        PSTATE.V = true;
+        pstate.V = true;
     } else {
-        PSTATE.V = false;
+        pstate.V = false;
     }
 }
