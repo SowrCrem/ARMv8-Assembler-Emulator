@@ -73,7 +73,7 @@ struct PSTATE constructPSTATE() {
     struct PSTATE pstate;
     pstate.C = false;
     pstate.N = false;
-    pstate.Z = false;
+    pstate.Z = true;
     pstate.V = false;
     return pstate;
 }
