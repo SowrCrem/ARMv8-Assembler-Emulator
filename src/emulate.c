@@ -93,7 +93,32 @@ void execute(uint32_t instruction) {
 
 // Writes the states of the registers to an output file
 void output() {
-    // TO BE IMPLEMENTED
+    printf("Registers:\n");
+    for (int i = 0; i < 30; ++i) {
+        printf("X%02d = %llx\n", i, readGeneral(i, 64));
+    }
+
+    printf("PC = %llx\n", readPC());
+    bool vars[] = {readN(), readZ(), readC(), readV()};
+    char letters[] = {'N', 'Z', 'C', 'V'};
+    int size =  sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
+
+    printf("PSTATE : ");
+    for (int i = 0; i < size; i++) {
+        if (vars[i]) {
+            printf("%c", letters[i]);
+        } else {
+            printf("-");
+        }
+    }
+    printf("\n");
+
+    printf("Non-zero memory:\n");
+    for (int i = 0; i < NO_ELEMENTS; ++i) {
+        if (readMemory(i) != 0) {
+            printf("%#x: %#x", i, readMemory(i));
+        }
+    }
 }
 
 int main( int argc, char **argv ) {
@@ -116,6 +141,9 @@ int main( int argc, char **argv ) {
 
     // Final writing of file
     output();
+
+    // Free memory after termination
+    freeMemory();
 
     return 0;
 }
