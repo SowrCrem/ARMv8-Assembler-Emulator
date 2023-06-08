@@ -104,14 +104,7 @@ int main( int argc, char **argv ) {
         exit(1);
     }
 
-
     readFile(argv[1], getMemory());
-
-    // Outputting contents of array storing binary file instructions
-//
-//    for (int i=0; i < NO_ELEMENTS; i++) {
-//        printf("%u\n", memory[i]);
-//    }
 
     // Fetch Decode Execute Pipeline:
     uint32_t instruction = fetch(getMemory());
@@ -124,5 +117,4 @@ int main( int argc, char **argv ) {
     output();
 
     return 0;
-
 }
