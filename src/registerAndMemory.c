@@ -1,7 +1,3 @@
-//
-// Created by Vivian Lopez on 07/06/2023.
-//
-
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
