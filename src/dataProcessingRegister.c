@@ -61,15 +61,16 @@ uint32_t ror32(uint32_t value, uint32_t shift) {
     return (value >> shift) | (value << (num_bits - shift));
 }
 
-void multiply(uint32_t inst) {
-
-}
 
 void arithmetic(uint32_t inst) {
 
 }
 
 void bit_logic(uint32_t inst) {
+
+}
+
+void multiply(uint32_t inst) {
 
 }
 

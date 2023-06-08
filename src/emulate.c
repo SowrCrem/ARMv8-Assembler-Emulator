@@ -69,7 +69,7 @@ enum instructionType decode(uint32_t instruction) {
         return DP_REGISTER;
     }
     if (matchesPattern(op0, "X1X0")) {
-        if (getMsb(instruction)) {
+        if (getMSB(instruction)) {
             return SINGLE_DATA_TRANSFER;
         }
         return LOAD_LITERAL;
