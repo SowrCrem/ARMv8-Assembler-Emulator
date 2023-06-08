@@ -14,13 +14,15 @@
 #define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
 #define NO_OP_INSTRUCTION 0xd503203f
 
-enum instructionType {NOP=-1,
-                      UNRECOGNISED=0,
-                      DP_IMMEDIATE=1,
-                      DP_REGISTER=2,
-                      SINGLE_DATA_TRANSFER=3,
-                      LOAD_LITERAL=4,
-                      BRANCH=5};
+enum instructionType {
+    NOP=-1,
+    UNRECOGNISED=0,
+    DP_IMMEDIATE=1,
+    DP_REGISTER=2,
+    SINGLE_DATA_TRANSFER=3,
+    LOAD_LITERAL=4,
+    BRANCH=5
+};
 
 
 // Puts the instructions stored in the binary file into an array
