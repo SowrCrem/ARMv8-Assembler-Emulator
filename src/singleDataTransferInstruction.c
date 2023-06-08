@@ -3,8 +3,8 @@
 //
 
 #include "singleDataTransferInstruction.h"
-#include "utils.c"
-#include "registerAndMemory.c"
+#include "utils.h"
+#include "registerAndMemory.h"
 #include <stdint.h>
 
 typedef enum {load, store} dataTransfer_t;
@@ -56,7 +56,7 @@ void singleDataTransfer(uint32_t instruction) {
             uint32_t simm9 = extractBits(instruction, 12, 20);
             targetAddress = xn + simm9;
             // Writing back the new calculated value back to xn
-            generalRegisters.data[xn] = targetAddress;
+            writeGeneral(xn, targetAddress, 64);
             break;
         }
         case postIndexed: {
@@ -73,17 +73,18 @@ void singleDataTransfer(uint32_t instruction) {
         }
     }
     // byte at target address is loaded into the lowest 8-bits of Rt
-    writeGeneral(rt, (generalRegisters.data[rt] << 8, 64) | readMemory(targetAddress), 64);
+    writeGeneral(rt, (readGeneral(xn, 64) << 8, 64) | readMemory(targetAddress),
+                 64);
     if (targetRegisterSize == 32) {
-        writeMemory(generalRegisters.data[rt], targetAddress + 3);
+        writeMemory(readGeneral(rt, 64), targetAddress + 3);
     } else {
-        writeMemory(generalRegisters.data[rt], targetAddress + 7);
+        writeMemory(readGeneral(rt, 64), targetAddress + 7);
     }
 
     // Write back xn for postIndexed case
     if (addressingMode == postIndexed) {
         uint32_t simm9 = extractBits(instruction, 12, 20);
         // Writing back the new calculated value back to xn
-        generalRegisters.data[xn] = xn + simm9;
+        writeGeneral(xn, xn + simm9, 64);
     }
 }

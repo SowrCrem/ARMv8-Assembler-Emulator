@@ -120,11 +120,11 @@ void freeMemory() {
     free(memory);
 }
 
-uint64_t readGeneral(int regNum, int mode) {
+uint64_t readGeneral(uint64_t regNum, int mode) {
     return generalRegisters.data[regNum];
 };
 
-void writeGeneral(uint32_t regNum, uint64_t data, int mode) {
+void writeGeneral(uint64_t regNum, uint64_t data, int mode) {
     pc.mode = mode;
     if (pc.mode == 32) {
         generalRegisters.data[regNum] = (data >> 32) | 0ULL;
