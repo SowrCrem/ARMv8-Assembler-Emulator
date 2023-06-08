@@ -35,8 +35,8 @@ bitsPair splitBits(uint32_t bits, int splitIndex) {
 }
 
 
-bool getMSB(uint32_t instr) {
-    return getBit(instr, 31);
+bool getMSB(uint32_t instruction) {
+    return getBit(instruction, 31);
 }
 
 // Returns the binary representation, as a string, of a value.
