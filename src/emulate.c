@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include "register.h"
+#include "registerAndMemory.h"
 #include "utils.h"
 #include "singleDataTransferInstruction.h"
 
@@ -99,9 +99,6 @@ void output() {
 
 int main( int argc, char **argv ) {
 
-    // Declaring Array to store binary instructions
-    uint32_t memory[NO_ELEMENTS];
-
     // Error checking for file existing as a program argument
     if( argc != 2 ) {
         fprintf( stderr, "Usage: ./emulate filename!\n" );
@@ -109,7 +106,7 @@ int main( int argc, char **argv ) {
     }
 
 
-    readFile(argv[1], memory);
+    readFile(argv[1], getMemory());
 
     // Outputting contents of array storing binary file instructions
 //
@@ -118,10 +115,10 @@ int main( int argc, char **argv ) {
 //    }
 
     // Fetch Decode Execute Pipeline:
-    uint32_t instruction = fetch(memory);
+    uint32_t instruction = fetch(getMemory());
     while (instruction != TERMINATE_INSTRUCTION) {
         // execute(instruction);
-        instruction = fetch(memory);
+        instruction = fetch(getMemory());
     }
 
     // Final writing of file

@@ -2,8 +2,8 @@
 // Created by Vivian Lopez on 07/06/2023.
 //
 
-#ifndef ARMV8_47_REGISTER_H
-#define ARMV8_47_REGISTER_H
+#ifndef ARMV8_47_REGISTERANDMEMORY_H
+#define ARMV8_47_REGISTERANDMEMORY_H
 
 // Function Declaration
 uint64_t readGeneral(int regNum, int mode);
@@ -20,5 +20,8 @@ bool readZ();
 void writeZ(bool var);
 bool readC();
 void writeC(bool var);
+uint32_t readMemory(uint32_t address);
+void writeMemory(uint32_t data, uint32_t address);
+uint32_t* getMemory(void);
 
-#endif //ARMV8_47_REGISTER_H
+#endif //ARMV8_47_REGISTERANDMEMORY_H

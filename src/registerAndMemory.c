@@ -7,13 +7,19 @@
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 uint64_t OULL;
 
 #define NO_GENERAL_REGISTERS 31
+#define NO_ELEMENTS 200000000000000000//((int) pow(2,15)) // This constant is used to store the size of memory
 
 typedef enum {ZR, PC, SP} specialRegisters;
 
-// The following 3 structs represent the registers
+// The following 4 structs represent the memory and registers
+
+struct memory {
+    uint32_t memory[NO_ELEMENTS];
+};
 
 struct generalRegister {
     int mode;
@@ -32,6 +38,13 @@ struct PSTATE {
     bool C;
     bool V;
 };
+
+
+struct memory constructMemory() {
+    struct memory memory;
+    memset(memory.memory, 0, NO_GENERAL_REGISTERS);
+    return memory;
+}
 
 struct generalRegister constructGeneralRegister() {
     struct generalRegister generalRegisters;
@@ -69,6 +82,7 @@ struct generalRegister generalRegisters;
 struct specialRegister pc;
 struct specialRegister zr;
 struct PSTATE pstate;
+struct memory memory;
 
 int main(void) {
     // Constructs all the registers
@@ -76,6 +90,19 @@ int main(void) {
     pc = constructPC();
     zr = constructZR();
     pstate = constructPSTATE();
+    memory = constructMemory();
+}
+
+uint32_t readMemory(uint32_t address) {
+    return memory.memory[address];
+}
+
+void writeMemory(uint32_t data, uint32_t address) {
+    memory.memory[address] = data;
+}
+
+uint32_t* getMemory() {
+    return memory.memory;
 }
 
 uint64_t readGeneral(int regNum, int mode) {

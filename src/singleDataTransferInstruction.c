@@ -2,13 +2,12 @@
 // Created by Vivian Lopez on 08/06/2023.
 //
 
-#include <stdint.h>
 #include "singleDataTransferInstruction.h"
 #include "utils.c"
-#include "register.c"
+#include "registerAndMemory.c"
 
 typedef enum {load, store} dataTransfer_t;
-typedef enum {unsignedOffset, preIndexed, postIndexed, registerOffset, literal} addressingMode_t;
+typedef enum {unsignedOffset, preIndexed, postIndexed, registerOffset} addressingMode_t;
 
 void singleDataTransfer(uint32_t instruction) {
     // Separating the instruction into the bits which are needed to determine the operation
@@ -16,6 +15,7 @@ void singleDataTransfer(uint32_t instruction) {
     uint32_t l = getBit(instruction, 22);
     uint32_t u = getBit(instruction, 24);
     uint64_t xn = extractBits(instruction, 5, 9);
+    uint64_t rt = extractBits(instruction, 0, 4);
 
     int targetRegisterSize = sf ? 64 : 32;
     dataTransfer_t dataTransferType = l ? load : store;
@@ -32,7 +32,8 @@ void singleDataTransfer(uint32_t instruction) {
             addressingMode = postIndexed;
         }
     }
-    // Not sure how to set register offset
+
+    // Set Register Offset //
 
     // The following switch case selects the correct targetAddress
     uint64_t targetAddress;
@@ -69,10 +70,18 @@ void singleDataTransfer(uint32_t instruction) {
         }
     }
 
-    // Remember to write back xn for postIndexed case
-    if (targetRegisterSize == 64) {
-        memory[]
+    if (targetRegisterSize == 32) {
+        generalRegisters.data[rt] = readMemory(targetAddress);
+        writeMemory(generalRegisters.data[rt], targetAddress + 3);
+    } else {
+        generalRegisters.data[rt] = readMemory(targetAddress);
+        writeMemory(generalRegisters.data[rt], targetAddress + 7);
     }
 
-
+    // Remember to write back xn for postIndexed case
+    if (addressingMode == postIndexed) {
+        uint32_t simm9 = extractBits(instruction, 12, 20);
+        // Writing back the new calculated value back to xn
+        generalRegisters.data[xn] = xn + simm9;
+    }
 }

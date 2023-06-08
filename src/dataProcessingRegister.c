@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "register.h"
+#include "registerAndMemory.h"
 
 void multiply(uint32_t inst) {
 
