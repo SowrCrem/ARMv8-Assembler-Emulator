@@ -123,3 +123,36 @@ void writePC64(uint64_t data, int mode) {
 uint64_t readZR() {
     return 0;
 };
+
+void writeN(bool val) {
+    if (val) {
+        PSTATE.N = true;
+    } else {
+        PSTATE.N = false
+    }
+
+}
+
+void writeZ(bool val) {
+    if (val) {
+        PSTATE.Z = true;
+    } else {
+        PSTATE.Z = false;
+    }
+}
+
+void writeC(bool val) {
+    if (val) {
+        PSTATE.C = true;
+    } else {
+        PSTATE.C = false;
+    }
+}
+
+void writeV(bool val) {
+    if (val) {
+        PSTATE.V = true;
+    } else {
+        PSTATE.V = false;
+    }
+}
