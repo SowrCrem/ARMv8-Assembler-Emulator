@@ -71,12 +71,11 @@ void singleDataTransfer(uint32_t instruction) {
             break;
         }
     }
-
+    // byte at target address is loaded into the lowest 8-bits of Rt
+    generalRegisters.data[rt] = (generalRegisters.data[rt] << 8) | readMemory(targetAddress);
     if (targetRegisterSize == 32) {
-        generalRegisters.data[rt] = readMemory(targetAddress);
         writeMemory(generalRegisters.data[rt], targetAddress + 3);
     } else {
-        generalRegisters.data[rt] = readMemory(targetAddress);
         writeMemory(generalRegisters.data[rt], targetAddress + 7);
     }
 
