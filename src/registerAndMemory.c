@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-uint64_t OULL;
+#include <stdint.h>
 
 #define NO_GENERAL_REGISTERS 31
 #define NO_ELEMENTS 200000000000000000//((int) pow(2,15)) // This constant is used to store the size of memory
@@ -112,7 +112,7 @@ uint64_t readGeneral(int regNum, int mode) {
 void writeGeneral(int regNum,uint64_t data, int mode) {
     pc.mode = mode;
     if (pc.mode == 32) {
-        generalRegisters.data[regNum] = (data >> 32) | OULL;
+        generalRegisters.data[regNum] = (data >> 32) | 0ULL;
     } else {
         generalRegisters.data[regNum] = data;
     }
@@ -128,7 +128,7 @@ uint64_t readPC() {
 void writePC32(uint32_t data, int mode) {
     pc.mode = mode;
     if (pc.mode == 32) {
-        pc.data = (data >> 32) | OULL;
+        pc.data = (data >> 32) | 0ULL;
     } else {
         pc.data = data;
     }
@@ -141,7 +141,7 @@ void writePC64(uint64_t data, int mode) {
     }
     pc.mode = mode;
     if (pc.mode == 32) {
-        pc.data = (data >> 32) | OULL;
+        pc.data = (data >> 32) | 0ULL;
     } else {
         pc.data = data;
     }
