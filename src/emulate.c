@@ -13,38 +13,34 @@
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
 #define NO_OP_INSTRUCTION 0xd503203f
-enum instructionType {NOP=-1, UNRECOGNISED=0, DP_IMMEDIATE=1, DP_REGISTER=2, SINGLE_DATA_TRANSFER=3, LOAD_LITERAL=4, BRANCH=5};
+
+enum instructionType {
+    NOP=-1,
+    UNRECOGNISED=0,
+    DP_IMMEDIATE=1,
+    DP_REGISTER=2,
+    SINGLE_DATA_TRANSFER=3,
+    LOAD_LITERAL=4,
+    BRANCH=5
+};
+
 
 // Puts the instructions stored in the binary file into an array
 void readFile(char* file, uint32_t data[]) {
-    // Open the file
-    FILE *fp = fopen( file, "rb" );
-
-    // Error check for opening file
-    if (fp == NULL) {
+    FILE *fp = fopen( file, "rb" ); // Open the file
+    if (fp == NULL) { // Error check for opening file
         fprintf( stderr, "cat: can’t open %s\n", file );
         exit(1);
     }
-
-    // Jump to the end of the file
-    fseek(fp, 0, SEEK_END);
-
-    // Get the current byte offset in the file
-    long fileLen = ftell(fp);
-
-    // Jump back to the beginning of the file
-    rewind(fp);
-
-    // Reading binary file
-    fread(data, sizeof(uint32_t), fileLen/4, fp);
-
+    fseek(fp, 0, SEEK_END); // Jump to the end of the file
+    long fileLen = ftell(fp); // Get the current byte offset in the file
+    rewind(fp); // Jump back to the beginning of the file
+    fread(data, sizeof(uint32_t), fileLen/4, fp); // Read binary file
     if (ferror(fp)) {
         fprintf( stderr, "Error occurred reading from output.txt\n" );
         exit(1);
     }
-
-    // Close the Binary file
-    fclose(fp);
+    fclose(fp); // Close the Binary file
 }
 
 // Retrieves next 4-byte instruction from memory
