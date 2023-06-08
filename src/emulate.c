@@ -84,18 +84,18 @@ void execute(uint32_t instruction) {
             // dataProcessingImmediateInstruction(instruction);
             break;
         case DP_REGISTER:
-            // dataProcessingRegisterInstruction(instruction);
+            dataProcessRegister(instruction);
             break;
         case SINGLE_DATA_TRANSFER:
             singleDataTransfer(instruction);
             break;
         case LOAD_LITERAL:
-            // loadLiteral(instruction);
+            // loadLiteral.c(instruction);
             break;
         case BRANCH:
             branch(instruction);
             break;
-        case NOP:    // nop - No Operation - skips operation
+        default:    // nop - No Operation - skips operation
             break;
     }
 
