@@ -22,18 +22,20 @@ void singleDataTransfer(uint32_t instruction) {
 
     // Selecting the correct addressing mode based on U and I
     addressingMode_t addressingMode;
-    if (u) {
-        addressingMode = unsignedOffset;
+    if (extractBits(instruction, 10, 15) == 0b011010 && getBit(instruction, 21) == 0b1) {
+        addressingMode = registerOffset;
     } else {
-        uint32_t i = getBit(instruction, 11);
-        if (i) {
-            addressingMode = preIndexed;
+        if (u) {
+            addressingMode = unsignedOffset;
         } else {
-            addressingMode = postIndexed;
+            uint32_t i = getBit(instruction, 11);
+            if (i) {
+                addressingMode = preIndexed;
+            } else {
+                addressingMode = postIndexed;
+            }
         }
     }
-
-    // Set Register Offset //
 
     // The following switch case selects the correct targetAddress
     uint64_t targetAddress;
@@ -78,7 +80,7 @@ void singleDataTransfer(uint32_t instruction) {
         writeMemory(generalRegisters.data[rt], targetAddress + 7);
     }
 
-    // Remember to write back xn for postIndexed case
+    // Write back xn for postIndexed case
     if (addressingMode == postIndexed) {
         uint32_t simm9 = extractBits(instruction, 12, 20);
         // Writing back the new calculated value back to xn
