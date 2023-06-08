@@ -8,5 +8,6 @@
 #endif //ARMV8_47_DATAPROCESSINGREGISTER_H
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-void chose(u_int32_t instr);
+void chose(uint32_t instr);

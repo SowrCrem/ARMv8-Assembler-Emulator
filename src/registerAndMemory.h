@@ -23,5 +23,6 @@ void writeC(bool var);
 uint32_t readMemory(uint32_t address);
 void writeMemory(uint32_t data, uint32_t address);
 uint32_t* getMemory(void);
+void construct(void);
 
 #endif //ARMV8_47_REGISTERANDMEMORY_H

@@ -5,6 +5,8 @@
 #ifndef ARMV8_47_UTILS_H
 #define ARMV8_47_UTILS_H
 
+#include <stdint.h>
+
 // Function Declaration
 uint32_t extractBits(uint32_t instr, int startIndex, int endIndex);
 bool getMSB(uint32_t instr);

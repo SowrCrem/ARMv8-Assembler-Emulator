@@ -5,6 +5,7 @@
 #include "singleDataTransferInstruction.h"
 #include "utils.c"
 #include "registerAndMemory.c"
+#include <stdint.h>
 
 typedef enum {load, store} dataTransfer_t;
 typedef enum {unsignedOffset, preIndexed, postIndexed, registerOffset} addressingMode_t;
@@ -72,7 +73,7 @@ void singleDataTransfer(uint32_t instruction) {
         }
     }
     // byte at target address is loaded into the lowest 8-bits of Rt
-    generalRegisters.data[rt] = (generalRegisters.data[rt] << 8) | readMemory(targetAddress);
+    writeGeneral(rt, generalRegisters.data[rt] << 8) | readMemory(targetAddress);
     if (targetRegisterSize == 32) {
         writeMemory(generalRegisters.data[rt], targetAddress + 3);
     } else {
