@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "utils.h"
 
 typedef struct {
@@ -22,24 +23,50 @@ uint32_t getBit(uint32_t bits, int bitIndex) {
     return extractBits(bits, bitIndex, bitIndex);
 }
 
+bitsPair splitBits(uint32_t bits, int splitIndex) {
+    //TODO
+    bitsPair splitted;
+    splitted.bits1 = bits;
+    splitted.bits2 = bits;
+    return splitted;
+}
+
 bool msb(uint32_t instr) {
     return getBit(instr, 31);
 }
 
-const char* bitsToString(uint32_t bits) {
-    char* bitsString = "1111";
-    return bitsString;
+const char* bitsToString(uint32_t value, int length) {
+    char* binaryString = (char*)malloc((length+1) * sizeof(char));  // Allocate memory for the binary string
+    if (binaryString == NULL) {
+        perror("Memory allocation failed");
+        return NULL;
+    }
+    binaryString[length] = '\0';  // Null-terminate the string
+    for (int i=length-1; i>=0; i--) {
+        binaryString[i] = (value & 1) ? '1' : '0';  // Extract the least significant bit
+        value >>= 1;  // Shift the value to the right
+    }
+    return binaryString;
 }
 
 bool matchesPattern(uint32_t bits, const char pattern[]) {
-    const char* bitStringPointer = bitsToString(bits);
-    char bitString[] = "";
-    strcpy(bitString, bitStringPointer);
+    int len = (int) strlen(pattern);
+    const char* bitString = bitsToString(bits, len);
     printf("%s", bitString);
-    // int len = strlen(pattern);
+    for(int i=0; i<len; i++) {
+        switch (pattern[i]) {
+            case 'X':
+                break;
+            default:
+                if(bitString[i] != pattern[i]) {
+                    return false;
+                }
+        }
+    }
     return true;
 }
 
 int main() {
-    matchesPattern(15, "1111");
+    bool match = matchesPattern(10, "10X0");
+    printf("\n%d", match);
 }
