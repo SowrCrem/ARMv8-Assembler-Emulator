@@ -7,7 +7,10 @@
 #include "branch.h"
 #include "utils.c"
 
+typedef enum {unconditional, reg, conditional} branch_t;
+
 void branch( uint32_t instruction ) {
-    // Branch instructions modify the PC
+    // PRE: bits 28-25 = 101x
+
 
 }
