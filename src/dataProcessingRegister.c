@@ -75,7 +75,7 @@ void multiply(uint32_t instruction) {
 
 }
 
-void dataProcessRegister(uint32_t instruction) {
+void dataProcessingRegister(uint32_t instruction) {
     bool m1 = getMSB(instruction << 3);
     if (m1 == 1) {
         multiply(instruction);

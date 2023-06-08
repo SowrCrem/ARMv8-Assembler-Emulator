@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "registerAndMemory.h"
 #include "singleDataTransferInstruction.h"
+#include "dataProcessingImmediates.h"
 #include "dataProcessingRegister.h"
 #include "branch.h"
 
@@ -81,21 +82,21 @@ void execute(uint32_t instruction) {
     int instructionType = decode(instruction);
     switch (instructionType) {
         case DP_IMMEDIATE:
-            // dataProcessingImmediateInstruction(instruction);
+            dataProcessingImmediateInstruction(instruction);
             break;
         case DP_REGISTER:
-            // dataProcessingRegisterInstruction(instruction);
+            dataProcessingRegister(instruction);
             break;
         case SINGLE_DATA_TRANSFER:
             singleDataTransfer(instruction);
             break;
         case LOAD_LITERAL:
-            // loadLiteral(instruction);
+            // loadLiteral.c(instruction);
             break;
         case BRANCH:
             branch(instruction);
             break;
-        case NOP:    // nop - No Operation - skips operation
+        default:    // nop - No Operation - skips operation
             break;
     }
 

@@ -8,6 +8,6 @@
 #include <stdint.h>
 
 // Function declaration
-void dataProcessRegister(uint32_t instruction);
+void dataProcessingRegister(uint32_t instruction);
 
 #endif //ARMV8_47_DATAPROCESSINGREGISTER_H#
