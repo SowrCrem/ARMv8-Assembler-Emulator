@@ -5,11 +5,6 @@
 #include <stdlib.h>
 #include "utils.h"
 
-typedef struct {
-    uint32_t bits1;
-    uint32_t bits2;
-} bitsPair_t;
-
 // Returns bits from startIndex to endIndex of the given instruction
 uint32_t extractBits(uint32_t instruction, int startIndex, int endIndex) {
     // Calculate the number of bits to extract
@@ -25,16 +20,7 @@ uint32_t getBit(uint32_t bits, int bitIndex) {
     return extractBits(bits, bitIndex, bitIndex);
 }
 
-// Returns a pair of instructions, split from 0-splitIndex (Inclusive) and the rest for the second half
-bitsPair_t splitBits(uint32_t bits, int splitIndex) {
-    //TODO
-    bitsPair_t splitted;
-    splitted.bits1 = bits;
-    splitted.bits2 = bits;
-    return splitted;
-}
-
-
+// Return the Most Significant Bit (MSB) of an instruction
 bool getMSB(uint32_t instruction) {
     return getBit(instruction, 31);
 }
@@ -66,9 +52,3 @@ bool matchesPattern(uint32_t bits, const char pattern[]) {
     }
     return true;
 }
-
-// For Testing Purposes
-//int main() {
-//    bool match = matchesPattern(10, "10X0");
-//    printf("\n%d", match);
-//}
