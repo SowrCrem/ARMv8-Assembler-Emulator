@@ -7,7 +7,7 @@
 #include "utils.h"
 
 #define NO_GENERAL_REGISTERS 31
-#define NO_ELEMENTS pow(2,15) // This constant is used to store the size of memory
+#define NO_ELEMENTS pow(2,21) // This constant is used to store the size of memory
 
 typedef enum {ZR, PC, SP} specialRegisters;
 

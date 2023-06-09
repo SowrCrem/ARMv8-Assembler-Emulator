@@ -110,10 +110,10 @@ void execute(uint32_t instruction) {
 void output() {
     printf("Registers:\n");
     for (int i = 0; i < 30; ++i) {
-        printf("X%02d = %llx\n", i, readGeneral(i, 64));
+        printf("X%02d = %lx\n", i, readGeneral(i, 64));
     }
 
-    printf("PC = %llx\n", readPC());
+    printf("PC = %lx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
     int size =  sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array

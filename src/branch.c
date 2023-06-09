@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "branch.h"
 #include "registerAndMemory.h"
-#include "utils.c"
+#include "utils.h"
 
 typedef enum {unconditional, reg, conditional} branch_t;
 

@@ -35,8 +35,8 @@ bitsPair splitBits(uint32_t bits, int splitIndex) {
 }
 
 
-bool getMSB(uint32_t instr) {
-    return getBit(instr, 31);
+bool getMSB(uint32_t instruction) {
+    return getBit(instruction, 31);
 }
 
 // Returns the binary representation, as a string, of a value.
@@ -68,7 +68,7 @@ bool matchesPattern(uint32_t bits, const char pattern[]) {
 }
 
 // For Testing Purposes
-int main() {
-    bool match = matchesPattern(10, "10X0");
-    printf("\n%d", match);
-}
+//int main() {
+//    bool match = matchesPattern(10, "10X0");
+//    printf("\n%d", match);
+//}
