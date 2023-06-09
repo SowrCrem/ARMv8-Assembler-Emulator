@@ -10,6 +10,7 @@
 #include "dataProcessingImmediates.h"
 #include "dataProcessingRegister.h"
 #include "branch.h"
+#include "loadLiteral.h"
 
 #define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
@@ -28,7 +29,7 @@ enum instructionType {
 
 // Puts the instructions stored in the binary file into an array
 void readFile(char* file, uint32_t data[]) {
-    FILE *fp = fopen( file, "rb" ); // Open the file
+    FILE *fp = fopen(file, "rb" ); // Open the file
     if (fp == NULL) { // Error check for opening file
         fprintf( stderr, "cat: can’t open %s\n", file );
         exit(1);
@@ -91,7 +92,7 @@ void execute(uint32_t instruction) {
             singleDataTransfer(instruction);
             break;
         case LOAD_LITERAL:
-            // loadLiteral.c(instruction);
+            loadLiteral(instruction);
             break;
         case BRANCH:
             branch(instruction);

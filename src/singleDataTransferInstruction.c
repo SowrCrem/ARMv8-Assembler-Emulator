@@ -5,7 +5,6 @@
 #include "singleDataTransferInstruction.h"
 #include "utils.h"
 #include "registerAndMemory.h"
-#include <stdint.h>
 
 typedef enum {load, store} dataTransfer_t;
 typedef enum {unsignedOffset, preIndexed, postIndexed, registerOffset} addressingMode_t;
