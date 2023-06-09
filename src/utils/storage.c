@@ -9,7 +9,9 @@
 #define NO_GENERAL_REGISTERS 31
 #define NO_ELEMENTS pow(2,21) // This constant is used to store the size of memory
 
-typedef enum {ZR, PC, SP} specialRegisters;
+typedef enum {
+    ZR, PC, SP
+} specialRegisters;
 
 // The following 3 structs represent the general and special registers
 
@@ -64,10 +66,10 @@ struct PSTATE constructPSTATE() {
 }
 
 // Modelling memory using malloc()
-uint32_t* memory;
+uint32_t *memory;
 
 void initializeMemory() {
-    memory = (uint32_t*)malloc(NO_ELEMENTS * sizeof(uint32_t));
+    memory = (uint32_t *) malloc(NO_ELEMENTS * sizeof(uint32_t));
     if (memory == NULL) {
         printf("Error: Failed to allocate memory\n");
         exit(1);
@@ -107,7 +109,7 @@ void writeMemory(uint32_t data, uint32_t address) {
     }
 }
 
-uint32_t* getMemory() {
+uint32_t *getMemory() {
     // returns basal pointer to array
     return memory;
 }
@@ -142,7 +144,7 @@ void writePC32(uint32_t data, int mode) {
 }
 
 void writePC64(uint64_t data, int mode) {
-    if (mode == 64 && pc.mode == 32)  {
+    if (mode == 64 && pc.mode == 32) {
         printf("Cannot write 64 bit data to 32 bit register");
         exit(1);
     }

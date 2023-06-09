@@ -138,20 +138,20 @@ void dataProcessingImmediateInstruction(uint32_t instr) {
                 writeGeneral(rd, to_set, 64);
 
             } else {
-                uint32_t to_set = (uint64_t)~opval;
+                uint32_t to_set = (uint64_t) ~opval;
                 writeGeneral(rd, to_set, 64);
             }
             //Move with zero
         } else if (opc == 2) {
             if (sf == 1) {
-                writeGeneral(rd, (uint64_t)opval, 64);
+                writeGeneral(rd, (uint64_t) opval, 64);
             } else {
                 writeGeneral(rd, opval, 32);
             }
 
             //Move with keep
         } else if (opc == 3) {
-            uint64_t to_set = movk(hw, imm16,rd);
+            uint64_t to_set = movk(hw, imm16, rd);
             if (sf == 0) {
                 uint64_t mask = 0xFFFFFFFF; // when only 32 bits
                 to_set = to_set & mask;

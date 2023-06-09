@@ -1,7 +1,9 @@
 #include "branch.h"
 #include "../utils/storage.h"
 
-typedef enum {unconditional, reg, conditional} branch_t;
+typedef enum {
+    unconditional, reg, conditional
+} branch_t;
 
 int64_t signExtendTo64(int64_t number, int n) {
     // Extract the sign bit (MSB)
@@ -89,7 +91,7 @@ void bcond(uint32_t instruction) {      // Branch to (PC + offset) iff cond
     }
 }
 
-void branch( uint32_t instruction ) {
+void branch(uint32_t instruction) {
     // PRE: bits 28-25 = 101x
 
     bool msb = getMSB(instruction);

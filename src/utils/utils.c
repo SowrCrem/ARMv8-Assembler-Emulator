@@ -40,14 +40,14 @@ bool getMSB(uint32_t instruction) {
 }
 
 // Returns the binary representation, as a string, of a value.
-const char* bitsToString(uint32_t value, int length) {
-    char* binaryString = (char*)malloc((length+1) * sizeof(char));  // Allocate memory for the binary string
+const char *bitsToString(uint32_t value, int length) {
+    char *binaryString = (char *) malloc((length + 1) * sizeof(char));  // Allocate memory for the binary string
     if (binaryString == NULL) {
         perror("Memory allocation failed");
         return NULL;
     }
     binaryString[length] = '\0';  // Null-terminate the string
-    for (int i=length-1; i>=0; i--) {
+    for (int i = length - 1; i >= 0; i--) {
         binaryString[i] = (value & 1) ? '1' : '0';  // Extract the least significant bit
         value >>= 1;  // Shift the value to the right
     }
@@ -57,9 +57,9 @@ const char* bitsToString(uint32_t value, int length) {
 // Determines whether the given bits match a given string pattern, including dontcares ("X"s)
 bool matchesPattern(uint32_t bits, const char pattern[]) {
     int len = (int) strlen(pattern);
-    const char* bitString = bitsToString(bits, len);
+    const char *bitString = bitsToString(bits, len);
     printf("%s", bitString);
-    for(int i=0; i<len; i++) {
+    for (int i = 0; i < len; i++) {
         if (pattern[i] != 'X' && bitString[i] != pattern[i]) {
             return false;
         }

@@ -12,29 +12,29 @@
 #define NO_OP_INSTRUCTION 0xd503203f
 
 enum instructionType {
-    NOP=-1,
-    UNRECOGNISED=0,
-    DP_IMMEDIATE=1,
-    DP_REGISTER=2,
-    SINGLE_DATA_TRANSFER=3,
-    LOAD_LITERAL=4,
-    BRANCH=5
+    NOP = -1,
+    UNRECOGNISED = 0,
+    DP_IMMEDIATE = 1,
+    DP_REGISTER = 2,
+    SINGLE_DATA_TRANSFER = 3,
+    LOAD_LITERAL = 4,
+    BRANCH = 5
 };
 
 
 // Puts the instructions stored in the binary file into an array
-void readFile(char* file, uint32_t data[]) {
-    FILE *fp = fopen(file, "rb" ); // Open the file
+void readFile(char *file, uint32_t data[]) {
+    FILE *fp = fopen(file, "rb"); // Open the file
     if (fp == NULL) { // Error check for opening file
-        fprintf( stderr, "cat: can’t open %s\n", file );
+        fprintf(stderr, "cat: can’t open %s\n", file);
         exit(1);
     }
     fseek(fp, 0, SEEK_END); // Jump to the end of the file
     long fileLen = ftell(fp); // Get the current byte offset in the file
     rewind(fp); // Jump back to the beginning of the file
-    fread(data, sizeof(uint32_t), fileLen/4, fp); // Read binary file
+    fread(data, sizeof(uint32_t), fileLen / 4, fp); // Read binary file
     if (ferror(fp)) {
-        fprintf( stderr, "Error occurred reading from output.txt\n" );
+        fprintf(stderr, "Error occurred reading from output.txt\n");
         exit(1);
     }
     fclose(fp); // Close the Binary file
@@ -45,7 +45,7 @@ uint32_t fetch(const uint32_t memory[]) {
     // Read PC register
     uint32_t programCounter = readPC();
     // Dereference the pointer to access the pointed instruction in memory
-    uint32_t instruction = *(uint32_t*)(memory + programCounter);
+    uint32_t instruction = *(uint32_t *) (memory + programCounter);
     return instruction;
 };
 
@@ -70,7 +70,7 @@ enum instructionType decode(uint32_t instruction) {
     if (matchesPattern(op0, "101X")) {
         return BRANCH;
     }
-        return UNRECOGNISED;
+    return UNRECOGNISED;
 }
 
 // Updates registers accordingly depending on the given instruction
@@ -111,7 +111,7 @@ void output() {
     printf("PC = %lx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
-    int size =  sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
+    int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
 
     printf("PSTATE : ");
     for (int i = 0; i < size; i++) {
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
     construct();
     // Error checking for file existing as a program argument
     if (argc != 2) {
-        fprintf( stderr, "Usage: ./emulate filename!\n" );
+        fprintf(stderr, "Usage: ./emulate filename!\n");
         exit(1);
     }
 

@@ -2,8 +2,12 @@
 #include "../utils/utils.h"
 #include "../utils/storage.h"
 
-typedef enum {load, store} dataTransfer_t;
-typedef enum {unsignedOffset, preIndexed, postIndexed, registerOffset} addressingMode_t;
+typedef enum {
+    load, store
+} dataTransfer_t;
+typedef enum {
+    unsignedOffset, preIndexed, postIndexed, registerOffset
+} addressingMode_t;
 
 void singleDataTransfer(uint32_t instruction) {
     // Separating the instruction into the bits which are needed to determine the operation
