@@ -1,11 +1,10 @@
 #include <math.h>
 #include "utils/utils.h"
 #include "utils/storage.h"
-#include "instructions/singleDataTransfer.h"
 #include "instructions/dpImmediate.h"
 #include "instructions/dpRegister.h"
 #include "instructions/branch.h"
-#include "instructions/loadLiteral.h"
+#include "instructions/dataTransfer.h"
 
 #define NO_ELEMENTS ((int) pow(2,18))       // Used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
@@ -16,9 +15,8 @@ enum instructionType {
     UNRECOGNISED = 0,
     DP_IMMEDIATE = 1,
     DP_REGISTER = 2,
-    SINGLE_DATA_TRANSFER = 3,
-    LOAD_LITERAL = 4,
-    BRANCH = 5
+    DATA_TRANSFER = 3,
+    BRANCH = 4
 };
 
 
@@ -62,10 +60,7 @@ enum instructionType decode(uint32_t instruction) {
         return DP_REGISTER;
     }
     if (matchesPattern(op0, "X1X0")) {
-        if (getMSB(instruction)) {
-            return SINGLE_DATA_TRANSFER;
-        }
-        return LOAD_LITERAL;
+        return DATA_TRANSFER;
     }
     if (matchesPattern(op0, "101X")) {
         return BRANCH;
@@ -83,11 +78,8 @@ void execute(uint32_t instruction) {
         case DP_REGISTER:
             dataProcessingRegister(instruction);
             break;
-        case SINGLE_DATA_TRANSFER:
-            singleDataTransfer(instruction);
-            break;
-        case LOAD_LITERAL:
-            loadLiteral(instruction);
+        case DATA_TRANSFER:
+            dataTransfer(instruction);
             break;
         case BRANCH:
             branch(instruction);

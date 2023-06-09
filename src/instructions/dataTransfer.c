@@ -1,15 +1,18 @@
-#include "singleDataTransfer.h"
+#include "dataTransfer.h."
 #include "../utils/utils.h"
 #include "../utils/storage.h"
+#include "loads_stores/singleDataTransfer.h"
+#include "loads_stores/loadLiteral.h"
 
 typedef enum {
     load, store
 } dataTransfer_t;
+
 typedef enum {
-    unsignedOffset, preIndexed, postIndexed, registerOffset
+    UNSIGNED_OFFSET, preIndexed, postIndexed, registerOffset, loadLiteral
 } addressingMode_t;
 
-void singleDataTransfer(uint32_t instruction) {
+void dataTransfer(uint32_t instruction) {
     // Separating the instruction into the bits which are needed to determine the operation
     uint32_t sf = getBit(instruction, 30);
     uint32_t l = getBit(instruction, 22);
@@ -21,18 +24,16 @@ void singleDataTransfer(uint32_t instruction) {
     dataTransfer_t dataTransferType = l ? load : store;
 
     // Selecting the correct addressing mode based on U and I
-    addressingMode_t addressingMode;
+    addressingMode_t addressingMode = postIndexed;
     if (extractBits(instruction, 10, 15) == 0b011010 && getBit(instruction, 21) == 0b1) {
         addressingMode = registerOffset;
     } else {
         if (u) {
-            addressingMode = unsignedOffset;
+            addressingMode = UNSIGNED_OFFSET;
         } else {
             uint32_t i = getBit(instruction, 11);
             if (i) {
                 addressingMode = preIndexed;
-            } else {
-                addressingMode = postIndexed;
             }
         }
     }
@@ -40,7 +41,7 @@ void singleDataTransfer(uint32_t instruction) {
     // The following switch case selects the correct targetAddress
     uint64_t targetAddress;
     switch (addressingMode) {
-        case unsignedOffset: {
+        case UNSIGNED_OFFSET: {
             uint32_t uoffset;
             uint32_t imm12 = extractBits(instruction, 10, 21);
             if (targetRegisterSize == 64) {
