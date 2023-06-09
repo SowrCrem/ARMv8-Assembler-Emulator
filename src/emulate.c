@@ -98,10 +98,10 @@ void output(char *fileName) {
     FILE *fp = fopen(fileName, "w");
     fprintf(fp, "Registers:\n");
     for (int i = 0; i < 30; ++i) {
-        fprintf(fp, "X%02d = %lx\n", i, readGeneral(i, 64));
+        fprintf(fp, "X%02d = %llx\n", i, readGeneral(i, 64));
     }
 
-    fprintf(fp,"PC = %lx\n", readPC());
+    fprintf(fp,"PC = %llx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
     int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
