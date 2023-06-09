@@ -102,31 +102,32 @@ void execute(uint32_t instruction) {
 }
 
 // Writes the states of the registers to an output file
-void output() {
-    printf("Registers:\n");
+void output(char fileName) {
+    FILE *fp = fopen(fileName, "w");
+    fprintf(fp, "Registers:\n");
     for (int i = 0; i < 30; ++i) {
-        printf("X%02d = %llx\n", i, readGeneral(i, 64));
+        fprintf(fp, "X%02d = %lx\n", i, readGeneral(i, 64));
     }
 
-    printf("PC = %llx\n", readPC());
+    fprintf(fp,"PC = %lx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
     int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
 
-    printf("PSTATE : ");
+    fprintf(fp, "PSTATE : ");
     for (int i = 0; i < size; i++) {
         if (vars[i]) {
-            printf("%c", letters[i]);
+            fprintf(fp, "%c", letters[i]);
         } else {
-            printf("-");
+            fprintf(fp, "-");
         }
     }
-    printf("\n");
+    fprintf(fp,"\n");
 
-    printf("Non-zero memory:\n");
+    fprintf(fp, "Non-zero memory:\n");
     for (int i = 0; i < NO_ELEMENTS; ++i) {
         if (readMemory(i) != 0) {
-            printf("%#x: %#x", i, readMemory(i));
+            fprintf(fp, "%#x: %#x", i, readMemory(i));
         }
     }
 }
