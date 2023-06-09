@@ -73,15 +73,16 @@ void dataTransfer(uint32_t instruction) {
         }
     }
 
-    //TODO: Add Load Logic
-    // byte at target address is loaded into the lowest 8-bits of Rt
-    writeGeneral(rt,
-                 (readGeneral(xn, 64) << 8, 64 | readMemory(targetAddress)),
-                 64);
-    if (targetRegisterSize == 32) {
-        writeMemory(readGeneral(rt, 64), targetAddress + 3);
+    if (l) {    //byte at target address is loaded into the lowest 8-bits of Rt
+        writeGeneral(rt,
+                     (readGeneral(xn, 64) << 8, 64 | readMemory(targetAddress)),
+                     64);
     } else {
-        writeMemory(readGeneral(rt, 64), targetAddress + 7);
+        if (targetRegisterSize == 32) {
+            writeMemory(readGeneral(rt, 64), targetAddress + 3);
+        } else {
+            writeMemory(readGeneral(rt, 64), targetAddress + 7);
+        }
     }
 
     // Write back xn for POST_INDEXED case
