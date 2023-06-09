@@ -130,9 +130,9 @@ int main(int argc, char **argv) {
     construct();
     // Error checking for file existing as a program argument
     if (argc != 3 | argc != 2) {
-        fprintf(stderr, "Usage: ./emulate filename!\n");
         printf("%d", argc);
         printf("%s %s %s", argv[0], argv[1], argv[2]);
+        fprintf(stderr, "Usage: ./emulate filename!\n");
         exit(1);
     }
 
