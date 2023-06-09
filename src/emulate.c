@@ -92,13 +92,13 @@ void execute(uint32_t instruction) {
         case BRANCH:
             branch(instruction);
             break;
+        case UNRECOGNISED:
+            printf("%s", "Unrecognised Instruction");
+            break;
         default:    // nop - No Operation - skips operation
             break;
     }
-
-    // Increment the PC after executing instruction
-    writePC32(readPC() + 4, 32);
-
+    writePC32(readPC() + 4, 32); // Increment PC after executing instruction
 }
 
 // Writes the states of the registers to an output file
