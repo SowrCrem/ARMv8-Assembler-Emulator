@@ -7,7 +7,7 @@ typedef enum {
 } dataTransfer_t;
 
 typedef enum {
-    UNSIGNED_OFFSET, preIndexed, postIndexed, registerOffset
+    UNSIGNED_OFFSET, PRE_INDEXED, POST_INDEXED, REGISTER_OFFSET
 } addressingMode_t;
 
 void singleDataTransfer(uint32_t instruction) {
@@ -24,16 +24,16 @@ void singleDataTransfer(uint32_t instruction) {
     // Selecting the correct addressing mode based on U and I
     addressingMode_t addressingMode;
     if (extractBits(instruction, 10, 15) == 0b011010 && getBit(instruction, 21) == 0b1) {
-        addressingMode = registerOffset;
+        addressingMode = REGISTER_OFFSET;
     } else {
         if (u) {
             addressingMode = UNSIGNED_OFFSET;
         } else {
             uint32_t i = getBit(instruction, 11);
             if (i) {
-                addressingMode = preIndexed;
+                addressingMode = PRE_INDEXED;
             } else {
-                addressingMode = postIndexed;
+                addressingMode = POST_INDEXED;
             }
         }
     }
@@ -52,18 +52,18 @@ void singleDataTransfer(uint32_t instruction) {
             targetAddress = xn + (uint64_t) uoffset;
             break;
         }
-        case preIndexed: {
+        case PRE_INDEXED: {
             uint32_t simm9 = extractBits(instruction, 12, 20);
             targetAddress = xn + simm9;
             // Writing back the new calculated value back to xn
             writeGeneral(xn, targetAddress, 64);
             break;
         }
-        case postIndexed: {
+        case POST_INDEXED: {
             targetAddress = xn;
             break;
         }
-        case registerOffset: {
+        case REGISTER_OFFSET: {
             uint64_t xm = extractBits(instruction, 16, 20);
             targetAddress = xn + xm;
             break;
@@ -82,8 +82,8 @@ void singleDataTransfer(uint32_t instruction) {
         writeMemory(readGeneral(rt, 64), targetAddress + 7);
     }
 
-    // Write back xn for postIndexed case
-    if (addressingMode == postIndexed) {
+    // Write back xn for POST_INDEXED case
+    if (addressingMode == POST_INDEXED) {
         uint32_t simm9 = extractBits(instruction, 12, 20);
         // Writing back the new calculated value back to xn
         writeGeneral(xn, xn + simm9, 64);
