@@ -2,7 +2,7 @@
 #include "../utils/storage.h"
 
 typedef enum {
-    unconditional, reg, conditional
+    unconditional, reg, conditional, uninitialised
 } branch_t;
 
 int64_t signExtendTo64(int64_t number, int n) {
@@ -97,20 +97,20 @@ void branch(uint32_t instruction) {
     bool msb = getMSB(instruction);
     uint32_t bits30to26 = extractBits(instruction, 26, 30);
     uint32_t bits30to25 = extractBits(instruction, 25, 30);
-    branch_t branch;
+    branch_t branch = uninitialised;
 
-    switch (msb) {
-        case 0:
-            // Unconditional branch
-            if (bits30to26 == 0b00101) branch = unconditional;
-            else if (bits30to25 == 0b101010) branch = conditional;
-            break;
-        case 1:
-            if (bits30to25 == 0b101011) branch = reg;
-            break;
-        default:
-            // branch is not set
-            break;
+    if (msb) {
+        if (bits30to25 == 0b101011) {
+            branch = reg;
+        }
+    }
+    else {
+        if (bits30to26 == 0b00101) {
+            branch = unconditional;
+        }  // Unconditional branch
+        else if (bits30to25 == 0b101010) {
+            branch = conditional;
+        }
     }
 
     switch (branch) {
