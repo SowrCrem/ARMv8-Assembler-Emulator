@@ -94,7 +94,7 @@ void execute(uint32_t instruction) {
 }
 
 // Writes the states of the registers to an output file
-void output(char fileName) {
+void output(char *fileName) {
     FILE *fp = fopen(fileName, "w");
     fprintf(fp, "Registers:\n");
     for (int i = 0; i < 30; ++i) {
@@ -129,8 +129,10 @@ int main(int argc, char **argv) {
 
     construct();
     // Error checking for file existing as a program argument
-    if (argc != 2) {
+    if (argc != 3 | argc != 2) {
         fprintf(stderr, "Usage: ./emulate filename!\n");
+        printf("%d", argc);
+        printf("%s %s %s", argv[0], argv[1], argv[2]);
         exit(1);
     }
 
@@ -144,7 +146,7 @@ int main(int argc, char **argv) {
     }
 
     // Final writing of file
-    output();
+    output(argv[2]);
 
     // Free memory after termination
     freeMemory();
