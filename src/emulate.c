@@ -47,7 +47,7 @@ uint32_t fetch(const uint32_t memory[]) {
     // Dereference the pointer to access the pointed instruction in memory
     uint32_t instruction = *(uint32_t *) (memory + programCounter);
     return instruction;
-};
+}
 
 // Decodes 4-byte word into instruction by returning the instruction type
 enum instructionType decode(uint32_t instruction) {
@@ -105,10 +105,10 @@ void execute(uint32_t instruction) {
 void output() {
     printf("Registers:\n");
     for (int i = 0; i < 30; ++i) {
-        printf("X%02d = %lx\n", i, readGeneral(i, 64));
+        printf("X%02d = %llx\n", i, readGeneral(i, 64));
     }
 
-    printf("PC = %lx\n", readPC());
+    printf("PC = %llx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
     int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
     // Fetch Decode Execute Pipeline:
     uint32_t instruction = fetch(getMemory());
     while (instruction != TERMINATE_INSTRUCTION) {
-        // execute(instruction);
+        execute(instruction);
         instruction = fetch(getMemory());
     }
 
