@@ -1,15 +1,6 @@
-//
-// Created by shlok on 08/06/2023.
-//
-
-#include "dataProcessingImmediates.h"
-//
-// Created by shlok on 08/06/2023.
-//
-#include <stdio.h>
-#include "utils.h"
-#include <stdint.h>
-#include "registerAndMemory.h"
+#include "dpImmediate.h"
+#include "../utils/utils.h"
+#include "../utils/storage.h"
 
 uint64_t movk(uint32_t hw, uint32_t imm16, uint32_t rd) {
     uint64_t reg = readGeneral(rd, 64);

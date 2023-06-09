@@ -1,10 +1,6 @@
-//
-// Created by Vivian Lopez on 08/06/2023.
-//
-
-#include "singleDataTransferInstruction.h"
-#include "utils.h"
-#include "registerAndMemory.h"
+#include "singleDataTransfer.h"
+#include "../utils/utils.h"
+#include "../utils/storage.h"
 
 typedef enum {load, store} dataTransfer_t;
 typedef enum {unsignedOffset, preIndexed, postIndexed, registerOffset} addressingMode_t;

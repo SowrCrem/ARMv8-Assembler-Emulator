@@ -1,13 +1,6 @@
-//
-// Created by Vivian Lopez on 07/06/2023.
-//
-
-#include "dataProcessingRegister.h"
-#include "utils.h"
-#include <stdio.h>
-#include <stdint.h>
+#include "dpRegister.h"
+#include "../utils/utils.h"
 #include <stdbool.h>
-#include "registerAndMemory.h"
 
 // BITWISE SHIFT FUNCTIONS
 

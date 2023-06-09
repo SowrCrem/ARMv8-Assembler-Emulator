@@ -1,18 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-#include "utils.h"
-#include "registerAndMemory.h"
-#include "singleDataTransferInstruction.h"
-#include "dataProcessingImmediates.h"
-#include "dataProcessingRegister.h"
-#include "branch.h"
-#include "loadLiteral.h"
+#include "utils/utils.h"
+#include "utils/storage.h"
+#include "instructions/singleDataTransfer.h"
+#include "instructions/dpImmediate.h"
+#include "instructions/dpRegister.h"
+#include "instructions/branch.h"
+#include "instructions/loadLiteral.h"
 
-#define NO_ELEMENTS ((int) pow(2,18)) // This constant is used to store the size of memory
+#define NO_ELEMENTS ((int) pow(2,18))       // Used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
 #define NO_OP_INSTRUCTION 0xd503203f
 
@@ -136,7 +131,7 @@ void output() {
     }
 }
 
-int main( int argc, char **argv ) {
+int main(int argc, char **argv) {
 
     construct();
     // Error checking for file existing as a program argument

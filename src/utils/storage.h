@@ -2,8 +2,8 @@
 // Created by Vivian Lopez on 07/06/2023.
 //
 
-#ifndef ARMV8_47_REGISTERANDMEMORY_H
-#define ARMV8_47_REGISTERANDMEMORY_H
+#ifndef ARMV8_47_STORAGE_H
+#define ARMV8_47_STORAGE_H
 
 #include <stdbool.h>
 #include <string.h>
@@ -32,4 +32,4 @@ uint32_t* getMemory(void);
 void construct(void);
 void freeMemory();
 
-#endif //ARMV8_47_REGISTERANDMEMORY_H
+#endif //ARMV8_47_STORAGE_H
