@@ -4,7 +4,7 @@
 
 uint64_t movk(uint32_t hw, uint32_t imm16, uint32_t rd) {
     uint64_t reg = readGeneral(rd, 64);
-    int start = (hw * 16);
+    int start = (int) (hw * 16);
     uint64_t to_set;
 
     uint64_t mask1 = ~(0xFFFF << start);
@@ -35,16 +35,16 @@ void dataProcessingImmediateInstruction(uint32_t instr) {
 
         //32 bit arithmetic
         if (sf == 0) {
-            int32_t rn_value = readGeneral(rd, 32);
+            int32_t rn_value = (int) readGeneral(rd, 32);
 
             if (opc == 0) {
-                int32_t to_set = imm12 + rn_value;
-                writeGeneral(rd, to_set, mode);
+                int32_t to_set = (int) imm12 + rn_value;
+                writeGeneral(rd, to_set, (int) mode);
 
                 //Adding and setting flags
             } else if (opc == 1) {
-                int32_t to_set = imm12 + rn_value;
-                writeGeneral(rd, to_set, mode);
+                int32_t to_set = (int) imm12 + rn_value;
+                writeGeneral(rd, to_set, (int) mode);
 
                 int nValue = (to_set > 0 ? 0 : 1);
                 writeN(nValue);
@@ -58,13 +58,13 @@ void dataProcessingImmediateInstruction(uint32_t instr) {
                 int cValue = ((to_set < imm12 || to_set < rn_value) ? 1 : 0);
                 writeC(cValue);
             } else if (opc == 2) {
-                int32_t to_set = rn_value - imm12;
-                writeGeneral(rd, to_set, mode);
+                int32_t to_set = (int) (rn_value - imm12);
+                writeGeneral(rd, to_set, (int) mode);
 
                 //Subtracting and setting flags
             } else {
-                int32_t to_set = rn_value - imm12;
-                writeGeneral(rd, to_set, mode);
+                int32_t to_set = (int) (rn_value - imm12);
+                writeGeneral(rd, to_set, (int) mode);
 
                 int nValue = (to_set > 0 ? 0 : 1);
                 writeN(nValue);
@@ -80,17 +80,17 @@ void dataProcessingImmediateInstruction(uint32_t instr) {
             }
             //64-bit arithmetic
         } else if (sf == 1) {
-            int64_t rn_value = readGeneral(rd, 64);
+            int64_t rn_value = (int) readGeneral(rd, 64);
 
             //Adding
             if (opc == 0) {
                 int64_t to_set = imm12 + rn_value;
-                writeGeneral(rd, to_set, mode);
+                writeGeneral(rd, to_set, (int) mode);
 
                 //Adding and setting flags
             } else if (opc == 1) {
                 int64_t to_set = imm12 + rn_value;
-                writeGeneral(rd, to_set, mode);
+                writeGeneral(rd, to_set, (int) mode);
 
                 int nValue = (to_set > 0 ? 0 : 1);
                 writeN(nValue);
@@ -105,12 +105,12 @@ void dataProcessingImmediateInstruction(uint32_t instr) {
                 writeC(cValue);
             } else if (opc == 2) {
                 int64_t to_set = rn_value - imm12;
-                writeGeneral(rd, to_set, mode);
+                writeGeneral(rd, to_set, (int) mode);
 
                 //Subtracting and setting flags
             } else {
                 int64_t to_set = rn_value - imm12;
-                writeGeneral(rd, to_set, mode);
+                writeGeneral(rd, to_set, (int) mode);
 
                 int nValue = (to_set > 0 ? 0 : 1);
                 writeN(nValue);
