@@ -124,6 +124,7 @@ void branch(uint32_t instruction) {
             bcond(instruction);
             break;
         default:
+            printf("Branch failed.");   // Error
             break;
     }
 }
