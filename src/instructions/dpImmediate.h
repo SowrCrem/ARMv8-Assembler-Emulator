@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-void dataProcessingImmediateInstruction(uint32_t instr);
+void dataProcessingImmediate(uint32_t instr);
 
 #endif //ARMV8_47_DPIMMEDIATE_H

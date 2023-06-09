@@ -15,7 +15,7 @@ uint64_t movk(uint32_t hw, uint32_t imm16, uint32_t rd) {
     return to_set;
 }
 
-void dataProcessingImmediateInstruction(uint32_t instr) {
+void dataProcessingImmediate(uint32_t instr) {
     uint32_t sf = extractBits(instr, 31, 31);
     uint32_t opc = extractBits(instr, 29, 30);
     uint32_t opi = extractBits(instr, 23, 25);

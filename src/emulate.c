@@ -78,7 +78,7 @@ void execute(uint32_t instruction) {
     int instructionType = decode(instruction);
     switch (instructionType) {
         case DP_IMMEDIATE:
-            dataProcessingImmediateInstruction(instruction);
+            dataProcessingImmediate(instruction);
             break;
         case DP_REGISTER:
             dataProcessingRegister(instruction);
