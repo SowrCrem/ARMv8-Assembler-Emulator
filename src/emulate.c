@@ -143,10 +143,10 @@ int main(int argc, char **argv) {
     readFile(argv[1], getMemory());
 
     // Fetch Decode Execute Pipeline:
-    uint32_t instruction = fetch(getMemory());
-    while (instruction != TERMINATE_INSTRUCTION) {
-        execute(instruction);
-        instruction = fetch(getMemory());
+    uint32_t nextInstruction = fetch(getMemory());
+    while (nextInstruction != TERMINATE_INSTRUCTION) {
+        execute(nextInstruction);
+        nextInstruction = fetch(getMemory());
     }
 
     // Final writing of file

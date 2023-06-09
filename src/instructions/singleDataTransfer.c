@@ -72,7 +72,8 @@ void singleDataTransfer(uint32_t instruction) {
         }
     }
     // byte at target address is loaded into the lowest 8-bits of Rt
-    writeGeneral(rt, (readGeneral(xn, 64) << 8, 64) | readMemory(targetAddress),
+    writeGeneral(rt,
+                 (readGeneral(xn, 64) << 8, 64 | readMemory(targetAddress)),
                  64);
     if (targetRegisterSize == 32) {
         writeMemory(readGeneral(rt, 64), targetAddress + 3);
