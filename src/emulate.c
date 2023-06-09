@@ -130,6 +130,7 @@ void output(char fileName) {
             fprintf(fp, "%#x: %#x", i, readMemory(i));
         }
     }
+    fclose(fp);
 }
 
 int main(int argc, char **argv) {
