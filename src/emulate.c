@@ -98,10 +98,10 @@ void output(char *fileName) {
     FILE *fp = fopen(fileName, "w");
     fprintf(fp, "Registers:\n");
     for (int i = 0; i < 30; ++i) {
-        fprintf(fp, "X%02d = %llx\n", i, readGeneral(i, 64));
+        fprintf(fp, "X%02d = %lx\n", i, readGeneral(i, 64));
     }
 
-    fprintf(fp,"PC = %llx\n", readPC());
+    fprintf(fp,"PC = %lx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
     int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
 
     construct();
     // Error checking for file existing as a program argument
-    if (argc != 3 | argc != 2) {
+    if (argc != 4) {
         printf("%d", argc);
         printf("%s %s %s", argv[0], argv[1], argv[2]);
         fprintf(stderr, "Usage: ./emulate filename!\n");
