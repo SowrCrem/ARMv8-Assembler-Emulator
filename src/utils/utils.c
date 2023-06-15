@@ -7,12 +7,22 @@
 
 // Returns bits from startIndex to endIndex of the given instruction
 uint32_t extractBits(uint32_t instruction, int startIndex, int endIndex) {
-    // Calculate the number of bits to extract
     int numBits = endIndex - startIndex + 1;
-    uint32_t mask = (1 << numBits) - 1;
-    mask <<= startIndex;
-    uint32_t extractedBits = (instruction & mask) >> startIndex;
-    return extractedBits;
+
+    // Determine the start and end bit positions for little-endian ordering
+    int startBitPos = startIndex % 32;
+    int endBitPos = endIndex % 32;
+
+    // Extract the bits based on little-endian bit ordering
+    uint32_t extractedBits = (instruction >> startBitPos) & ((1 << numBits) - 1);
+
+    // Reverse the bit order for little-endian bit ordering
+    uint32_t reversedBits = 0;
+    for (int i = 0; i < numBits; i++) {
+        reversedBits |= ((extractedBits >> i) & 1) << (numBits - 1 - i);
+    }
+
+    return reversedBits;
 }
 
 // Returns the bit at the bitIndex of the given instruction
