@@ -44,6 +44,7 @@ uint32_t fetch(const uint32_t memory[]) {
     uint32_t programCounter = readPC();
     // Dereference the pointer to access the pointed instruction in memory
     uint32_t instruction = *(uint32_t *) (memory + programCounter);
+    // printf("Actual Instruction: %d ",instruction);
     return instruction;
 }
 
@@ -90,7 +91,7 @@ void execute(uint32_t instruction) {
         default:    // nop - No Operation - skips operation
             break;
     }
-    writePC32(readPC() + 4, 32); // Increment PC after executing instruction
+    writePC64(readPC() + 4, 64); // Increment PC after executing instruction
 }
 
 // Writes the states of the registers to an output file
@@ -160,8 +161,6 @@ int main(int argc, char **argv) {
     construct();
     // Error checking for file existing as a program argument
     if (argc < 2) {
-//        printf("%d\n", argc);
-//        printf("%s %s %s", argv[0], argv[1], argv[2]);
         fprintf(stderr, "Usage: ./emulate filename!\n");
         return EXIT_FAILURE;
     }
@@ -170,13 +169,14 @@ int main(int argc, char **argv) {
 
     int count = 1;
     // Fetch Decode Execute Pipeline:
-    uint32_t nextInstruction = fetch(getMemory());
-    while (nextInstruction != TERMINATE_INSTRUCTION) {
-        execute(nextInstruction);
+    uint32_t nextInstruction;
+    do {
+        printf("Instruction number: %d ", count);
         nextInstruction = fetch(getMemory());
-        printf("Instruction number: %d\n", count);
+        printf("PC value: %lu \n", readPC());
+        //execute(nextInstruction);
         count++;
-    }
+    } while (nextInstruction != TERMINATE_INSTRUCTION);
 
     // Final writing of file
     if (argc == 2) {
