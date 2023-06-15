@@ -24,7 +24,7 @@ enum instructionType {
 void readFile(char *file, uint32_t data[]) {
     FILE *fp = fopen(file, "rb"); // Open the file
     if (fp == NULL) { // Error check for opening file
-        fprintf(stderr, "cat: can’t open %s\n", file);
+        fprintf(stderr, "Can’t open %s\n", file);
         exit(1);
     }
     fseek(fp, 0, SEEK_END); // Jump to the end of the file
@@ -94,8 +94,38 @@ void execute(uint32_t instruction) {
 }
 
 // Writes the states of the registers to an output file
-void output(char *fileName) {
-    FILE *fp = fopen(fileName, "w");
+void output_stdout() {
+
+    printf( "Registers:\n");
+    for (int i = 0; i < 30; ++i) {
+        printf("X%02d = %lx\n", i, readGeneral(i, 64));
+    }
+
+    printf("PC = %lx\n", readPC());
+    bool vars[] = {readN(), readZ(), readC(), readV()};
+    char letters[] = {'N', 'Z', 'C', 'V'};
+    int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
+
+    printf("PSTATE : ");
+    for (int i = 0; i < size; i++) {
+        if (vars[i]) {
+            printf( "%c", letters[i]);
+        } else {
+            printf( "-");
+        }
+    }
+    printf("\n");
+
+    printf( "Non-zero memory:\n");
+    for (int i = 0; i < NO_ELEMENTS; ++i) {
+        if (readMemory(i) != 0) {
+            printf( "%#x: %#x", i, readMemory(i));
+        }
+    }
+}
+
+void output_file(char *filename) {
+    FILE *fp = fopen(filename, "w");
     fprintf(fp, "Registers:\n");
     for (int i = 0; i < 30; ++i) {
         fprintf(fp, "X%02d = %lx\n", i, readGeneral(i, 64));
@@ -111,12 +141,12 @@ void output(char *fileName) {
         if (vars[i]) {
             fprintf(fp, "%c", letters[i]);
         } else {
-            fprintf(fp, "-");
+            fprintf( fp,"-");
         }
     }
     fprintf(fp,"\n");
 
-    fprintf(fp, "Non-zero memory:\n");
+    fprintf( fp,"Non-zero memory:\n");
     for (int i = 0; i < NO_ELEMENTS; ++i) {
         if (readMemory(i) != 0) {
             fprintf(fp, "%#x: %#x", i, readMemory(i));
@@ -129,24 +159,31 @@ int main(int argc, char **argv) {
 
     construct();
     // Error checking for file existing as a program argument
-    if (argc != 4) {
-        printf("%d", argc);
-        printf("%s %s %s", argv[0], argv[1], argv[2]);
+    if (argc < 2) {
+//        printf("%d\n", argc);
+//        printf("%s %s %s", argv[0], argv[1], argv[2]);
         fprintf(stderr, "Usage: ./emulate filename!\n");
         return EXIT_FAILURE;
     }
 
     readFile(argv[1], getMemory());
 
+    int count = 1;
     // Fetch Decode Execute Pipeline:
     uint32_t nextInstruction = fetch(getMemory());
     while (nextInstruction != TERMINATE_INSTRUCTION) {
         execute(nextInstruction);
         nextInstruction = fetch(getMemory());
+        printf("Instruction number: %d\n", count);
+        count++;
     }
 
     // Final writing of file
-    output(argv[2]);
+    if (argc == 2) {
+        output_stdout();
+    } else if (argc == 3) {
+        output_file(argv[2]);
+    }
 
     // Free memory after termination
     freeMemory();

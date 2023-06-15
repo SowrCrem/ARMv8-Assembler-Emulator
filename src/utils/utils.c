@@ -44,7 +44,6 @@ const char *bitsToString(uint32_t value, int length) {
 bool matchesPattern(uint32_t bits, const char pattern[]) {
     int len = (int) strlen(pattern);
     const char *bitString = bitsToString(bits, len);
-    printf("%s", bitString);
     for (int i = 0; i < len; i++) {
         if (pattern[i] != 'X' && bitString[i] != pattern[i]) {
             return false;
