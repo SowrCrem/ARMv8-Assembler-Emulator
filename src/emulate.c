@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
         printf("%d", argc);
         printf("%s %s %s", argv[0], argv[1], argv[2]);
         fprintf(stderr, "Usage: ./emulate filename!\n");
-        exit(1);
+        return EXIT_FAILURE;
     }
 
     readFile(argv[1], getMemory());
@@ -151,5 +151,5 @@ int main(int argc, char **argv) {
     // Free memory after termination
     freeMemory();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

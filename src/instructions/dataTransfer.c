@@ -12,8 +12,8 @@ void dataTransfer(uint32_t instruction) {
     // Separating the instruction into the bits which are needed to determine the operation
     uint32_t singleDataTransfer = getBit(instruction, 29);
     uint32_t sf = getBit(instruction, 30);
-    uint32_t l = getBit(instruction, 22);
-    uint32_t u = getBit(instruction, 24);
+    uint32_t l  = getBit(instruction, 22);
+    uint32_t u  = getBit(instruction, 24);
     uint64_t xn = extractBits(instruction, 5, 9);
     uint64_t rt = extractBits(instruction, 0, 4);
     int targetRegisterSize = sf ? 64 : 32;
