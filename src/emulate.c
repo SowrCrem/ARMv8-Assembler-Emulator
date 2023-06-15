@@ -6,9 +6,11 @@
 #include "instructions/branch.h"
 #include "instructions/dataTransfer.h"
 
-#define NO_ELEMENTS ((int) pow(2,18))       // Used to store the size of memory
+#define NO_ELEMENTS ((int) pow(2,21))       // Used to store the size of memory
 #define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
 #define NO_OP_INSTRUCTION 0xd503203f
+
+static bool debug = true;
 
 enum instructionType {
     NOP = -1,
@@ -30,7 +32,9 @@ void readFile(char *file, uint32_t data[]) {
     fseek(fp, 0, SEEK_END); // Jump to the end of the file
     long fileLen = ftell(fp); // Get the current byte offset in the file
     rewind(fp); // Jump back to the beginning of the file
-    fread(data, sizeof(uint32_t), fileLen / 4, fp); // Read binary file
+    size_t num_values = fileLen / sizeof(uint32_t);
+
+    fread(data, sizeof(uint32_t), num_values * 4, fp); // Read binary file
     if (ferror(fp)) {
         fprintf(stderr, "Error occurred reading from output.txt\n");
         exit(1);
@@ -43,9 +47,10 @@ uint32_t fetch(const uint32_t memory[]) {
     // Read PC register
     uint32_t programCounter = readPC();
     // Dereference the pointer to access the pointed instruction in memory
-    uint32_t instruction = *(uint32_t *) (memory + programCounter);
-    // printf("Actual Instruction: %d ",instruction);
-    return instruction;
+    //uint32_t instruction = *(uint32_t *) (memory + programCounter);
+    uint32_t instr = readMemory(programCounter);
+    writePC64(readPC() + 4, 64); // Increment PC
+    return instr;
 }
 
 // Decodes 4-byte word into instruction by returning the instruction type
@@ -84,14 +89,13 @@ void execute(uint32_t instruction) {
             break;
         case BRANCH:
             branch(instruction);
-            break;
+            return;
         case UNRECOGNISED:
-            printf("%s", "Unrecognised Instruction");
+            printf("Unrecognised Instruction\n");
             break;
         default:    // nop - No Operation - skips operation
             break;
     }
-    writePC64(readPC() + 4, 64); // Increment PC after executing instruction
 }
 
 // Writes the states of the registers to an output file
@@ -128,11 +132,11 @@ void output_stdout() {
 void output_file(char *filename) {
     FILE *fp = fopen(filename, "w");
     fprintf(fp, "Registers:\n");
-    for (int i = 0; i < 30; ++i) {
-        fprintf(fp, "X%02d = %lx\n", i, readGeneral(i, 64));
+    for (int i = 0; i < 31; ++i) {
+        fprintf(fp,"X%02d    = %016lx\n", i, readGeneral(i, 64));
     }
 
-    fprintf(fp,"PC = %lx\n", readPC());
+    fprintf(fp,"PC     = %016lx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
     int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
@@ -147,13 +151,43 @@ void output_file(char *filename) {
     }
     fprintf(fp,"\n");
 
-    fprintf( fp,"Non-zero memory:\n");
+    fprintf( fp,"Non-Zero Memory:\n");
     for (int i = 0; i < NO_ELEMENTS; ++i) {
         if (readMemory(i) != 0) {
-            fprintf(fp, "%#x: %#x", i, readMemory(i));
+            if (i == 0) {
+                fprintf(fp, "0x00000000 : %x\n", readMemory(i));
+            } else {
+                fprintf(fp, "%#010x : %x\n", i, readMemory(i));
+            }
         }
     }
     fclose(fp);
+}
+
+void printBinary(uint32_t num) {
+    // Number of bits in an integer (assuming 32 bits)
+    int numBits = sizeof(num) * 8;
+
+    // Iterate over each bit from left to right
+    for (int i = numBits - 1; i >= 0; i--) {
+        // Check the value of the current bit
+        int bit = (num >> i) & 1;
+
+        // Print the bit
+        printf("%d", bit);
+    }
+
+    //printf("\n");
+}
+
+void printArray(uint32_t arr[], int size) {
+    printf("[ ");
+    for (int i = 0; i < size; i++) {
+        if (arr[i] != 0x0) {
+            printf("[ %d index %d ]", arr[i], i);
+        }
+    }
+    printf(" ]\n");
 }
 
 int main(int argc, char **argv) {
@@ -166,22 +200,27 @@ int main(int argc, char **argv) {
     }
 
     readFile(argv[1], getMemory());
-
+    if (debug) printf("Non Zero Memory:\n");
+    if (debug) printArray(getMemory(), 50);
     int count = 1;
     // Fetch Decode Execute Pipeline:
     uint32_t nextInstruction;
     do {
-        printf("Instruction number: %d ", count);
+        if (debug) printf("Instruction number: %d, instruction value: ", count);
         nextInstruction = fetch(getMemory());
-        printf("PC value: %lu \n", readPC());
-        //execute(nextInstruction);
-        count++;
+        if (decode(nextInstruction) == UNRECOGNISED) {
+            break;
+        }
+        if (debug) printBinary(nextInstruction);
+        if (debug) printf(", PC value: %lu \n", readPC());
+        execute(nextInstruction);
+        if (debug) count++;
     } while (nextInstruction != TERMINATE_INSTRUCTION);
 
     // Final writing of file
-    if (argc == 2) {
+    if (argv[2] == NULL) {
         output_stdout();
-    } else if (argc == 3) {
+    } else {
         output_file(argv[2]);
     }
 
