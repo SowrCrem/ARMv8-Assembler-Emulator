@@ -21,6 +21,23 @@ enum instructionType {
     BRANCH = 4
 };
 
+void shiftArrayByFour(uint32_t array[], size_t size) {
+    uint32_t *shiftedArray = (uint32_t *) malloc((size) * sizeof(uint32_t));
+
+    // Initialise shifted array to 0
+    for (size_t i = 0; i < size; i++) {
+        shiftedArray[i] = 0;
+    }
+
+    // Copy shifted values from the original array
+    for (size_t i = 0; i < size; i++) {
+        shiftedArray[i * 4] = array[i];
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        array[i] = shiftedArray[i];
+    }
+}
 
 // Puts the instructions stored in the binary file into an array
 void readFile(char *file, uint32_t data[]) {
@@ -32,14 +49,19 @@ void readFile(char *file, uint32_t data[]) {
     fseek(fp, 0, SEEK_END); // Jump to the end of the file
     long fileLen = ftell(fp); // Get the current byte offset in the file
     rewind(fp); // Jump back to the beginning of the file
-    size_t num_values = fileLen / sizeof(uint32_t);
+    // size_t num_values = fileLen / (4 * sizeof(uint32_t));
+    size_t num_values = fileLen / (sizeof(uint32_t));
+    if (debug) {
 
-    fread(data, sizeof(uint32_t), num_values * 4, fp); // Read binary file
+    }
+    fread(data, sizeof(uint32_t), num_values, fp); // Read binary file
     if (ferror(fp)) {
         fprintf(stderr, "Error occurred reading from output.txt\n");
         exit(1);
     }
     fclose(fp); // Close the Binary file
+
+    shiftArrayByFour(data, 100);
 }
 
 // Retrieves next 4-byte instruction from memory
@@ -56,6 +78,7 @@ uint32_t fetch(const uint32_t memory[]) {
 // Decodes 4-byte word into instruction by returning the instruction type
 enum instructionType decode(uint32_t instruction) {
     if (instruction == NO_OP_INSTRUCTION) {
+        writePC64(readPC() - 4, 64);    // Decrement PC
         return NOP;
     }
     uint32_t op0 = extractBits(instruction, 25, 28);
@@ -101,7 +124,7 @@ void execute(uint32_t instruction) {
 // Writes the states of the registers to an output file
 void output_stdout() {
 
-    printf( "Registers:\n");
+    printf("Registers:\n");
     for (int i = 0; i < 30; ++i) {
         printf("X%02d = %lx\n", i, readGeneral(i, 64));
     }
@@ -114,17 +137,17 @@ void output_stdout() {
     printf("PSTATE : ");
     for (int i = 0; i < size; i++) {
         if (vars[i]) {
-            printf( "%c", letters[i]);
+            printf("%c", letters[i]);
         } else {
-            printf( "-");
+            printf("-");
         }
     }
     printf("\n");
 
-    printf( "Non-zero memory:\n");
+    printf("Non-zero memory:\n");
     for (int i = 0; i < NO_ELEMENTS; ++i) {
         if (readMemory(i) != 0) {
-            printf( "%#x: %#x", i, readMemory(i));
+            printf("%#x: %#x", i, readMemory(i));
         }
     }
 }
@@ -133,10 +156,10 @@ void output_file(char *filename) {
     FILE *fp = fopen(filename, "w");
     fprintf(fp, "Registers:\n");
     for (int i = 0; i < 31; ++i) {
-        fprintf(fp,"X%02d    = %016lx\n", i, readGeneral(i, 64));
+        fprintf(fp, "X%02d    = %016lx\n", i, readGeneral(i, 64));
     }
 
-    fprintf(fp,"PC     = %016lx\n", readPC());
+    fprintf(fp, "PC     = %016lx\n", readPC());
     bool vars[] = {readN(), readZ(), readC(), readV()};
     char letters[] = {'N', 'Z', 'C', 'V'};
     int size = sizeof(vars) / sizeof(vars[0]);     // to calculate number of elements in array
@@ -146,12 +169,12 @@ void output_file(char *filename) {
         if (vars[i]) {
             fprintf(fp, "%c", letters[i]);
         } else {
-            fprintf( fp,"-");
+            fprintf(fp, "-");
         }
     }
-    fprintf(fp,"\n");
+    fprintf(fp, "\n");
 
-    fprintf( fp,"Non-Zero Memory:\n");
+    fprintf(fp, "Non-Zero Memory:\n");
     for (int i = 0; i < NO_ELEMENTS; ++i) {
         if (readMemory(i) != 0) {
             if (i == 0) {
@@ -200,25 +223,35 @@ int main(int argc, char **argv) {
     }
 
     readFile(argv[1], getMemory());
-    if (debug) printf("Non Zero Memory:\n");
-    if (debug) printArray(getMemory(), 50);
+    if (debug) {
+        printf("Non Zero Memory:\n");
+        printArray(getMemory(), 50);
+    }
     int count = 1;
     // Fetch Decode Execute Pipeline:
     uint32_t nextInstruction;
-    do {
-        if (debug) printf("Instruction number: %d, instruction value: ", count);
-        nextInstruction = fetch(getMemory());
+    while (nextInstruction != TERMINATE_INSTRUCTION) {
+        if (debug) {
+            printf("Instruction number: %d, instruction value: ", count);
+            nextInstruction = fetch(getMemory());
+        }
         if (decode(nextInstruction) == UNRECOGNISED) {
             break;
         }
-        if (debug) printBinary(nextInstruction);
-        if (debug) printf(", PC value: %lu \n", readPC());
+        if (debug) {
+            printBinary(nextInstruction);
+            printf(", PC value: %lu \n", readPC());
+        }
         execute(nextInstruction);
-        if (debug) count++;
-    } while (nextInstruction != TERMINATE_INSTRUCTION);
+        if (debug) {
+            count++;
+        }
+    }
+
+
 
     // Final writing of file
-    if (argv[2] == NULL) {
+    if (argc == 2) {
         output_stdout();
     } else {
         output_file(argv[2]);
