@@ -68,14 +68,14 @@ uint32_t fetch(const uint32_t memory[]) {
     // Dereference the pointer to access the pointed instruction in memory
     //uint32_t instruction = *(uint32_t *) (memory + programCounter);
     uint32_t instr = readMemory(programCounter);
-    writePC64(readPC() + 4, 64); // Increment PC
+//    writePC64(readPC() + 4, 64); // Increment PC
     return instr;
 }
 
 // Decodes 4-byte word into instruction by returning the instruction type
 enum instructionType decode(uint32_t instruction) {
     if (instruction == NO_OP_INSTRUCTION) {
-        writePC64(readPC() - 4, 64);    // Decrement PC
+//        writePC64(readPC() - 4, 64);    // Decrement PC
         return NOP;
     }
     uint32_t op0 = extractBits(instruction, 25, 28);
@@ -97,15 +97,19 @@ enum instructionType decode(uint32_t instruction) {
 // Updates registers accordingly depending on the given instruction
 void execute(uint32_t instruction) {
     int instructionType = decode(instruction);
+    printf("Instruction type %d", instructionType);
     switch (instructionType) {
         case DP_IMMEDIATE:
             dataProcessingImmediate(instruction);
+            writePC64(readPC() + 4, 64);
             break;
         case DP_REGISTER:
             dataProcessingRegister(instruction);
+            writePC64(readPC() + 4, 64);
             break;
         case DATA_TRANSFER:
             dataTransfer(instruction);
+            writePC64(readPC() + 4, 64);
             break;
         case BRANCH:
             branch(instruction);
@@ -116,6 +120,8 @@ void execute(uint32_t instruction) {
         default:    // nop - No Operation - skips operation
             break;
     }
+    printf("Pc value %d", readPC());
+     //increment the pc after
 }
 
 // Writes the states of the registers to an output file
@@ -226,11 +232,10 @@ int main(int argc, char **argv) {
     }
     int count = 1;
     // Fetch Decode Execute Pipeline:
-    uint32_t nextInstruction;
+    uint32_t nextInstruction = fetch(getMemory());
     while (nextInstruction != TERMINATE_INSTRUCTION) {
         if (debug) {
-            printf("Instruction number: %d, instruction value: ", count);
-            nextInstruction = fetch(getMemory());
+            printf("Instruction number: %d, instruction value: \n\n ", count);
         }
         if (decode(nextInstruction) == UNRECOGNISED) {
             break;
@@ -243,6 +248,7 @@ int main(int argc, char **argv) {
         if (debug) {
             count++;
         }
+        nextInstruction = fetch(getMemory());
     }
 
 
