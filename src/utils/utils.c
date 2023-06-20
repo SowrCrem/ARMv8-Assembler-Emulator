@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>
 #include "utils.h"
 
 // Returns bits from startIndex to endIndex of the given instruction
@@ -60,4 +55,46 @@ bool matchesPattern(uint32_t bits, const char pattern[]) {
         }
     }
     return true;
+}
+
+char *initialise_array(unsigned int size)
+{
+    char *array = (char *)calloc(size, sizeof(char));
+    if (!array)
+    {
+        perror("Unable to allocate memory for array.\n");
+        exit(EXIT_FAILURE);
+    }
+    return array;
+}
+
+char **initialise_2d_array(unsigned int rows, unsigned int cols)
+{
+    char **array = calloc(rows, sizeof(char *));
+    if (!array)
+    {
+        perror("Unable to allocate memory for pointer array.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        array[i] = calloc(cols, sizeof(char));
+        if (!array[i])
+        {
+            perror("Unable to allocate memory for array.\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    return array;
+}
+
+void destroy_2d_array(char **arr, int rows)
+{
+    for (int i = 0; i < rows; i++)
+    {
+        free(arr[i]);
+    }
+    free(arr);
 }
