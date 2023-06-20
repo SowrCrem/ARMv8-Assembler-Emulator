@@ -1,14 +1,11 @@
 #include <math.h>
+#include "global_var.h"
 #include "utils/utils.h"
 #include "utils/storage.h"
 #include "instructions/dpImmediate.h"
 #include "instructions/dpRegister.h"
 #include "instructions/branch.h"
 #include "instructions/dataTransfer.h"
-
-#define NO_ELEMENTS ((int) pow(2,21))       // Used to store the size of memory
-#define TERMINATE_INSTRUCTION 0x8a000000    // AND x0 x0 x0
-#define NO_OP_INSTRUCTION 0xd503203f
 
 static bool debug = true;
 
