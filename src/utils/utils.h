@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "../global_var.h"
 
 // Function Declaration
 uint32_t extractBits(uint32_t instruction, int startIndex, int endIndex);

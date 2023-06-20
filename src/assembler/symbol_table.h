@@ -3,6 +3,7 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 #include "../global_var.h"
+#include "../utils/utils.h"
 #include <string.h>
 
 typedef struct symbol_table_node

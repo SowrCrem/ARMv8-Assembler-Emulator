@@ -2,9 +2,6 @@
 
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "../global_var.h"
 #include "../utils/utils.h"
 #include "symbol_table.h"

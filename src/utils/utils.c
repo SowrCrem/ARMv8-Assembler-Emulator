@@ -57,6 +57,8 @@ bool matchesPattern(uint32_t bits, const char pattern[]) {
     return true;
 }
 
+// FOR ASSEMBLER
+
 char *initialise_array(unsigned int size)
 {
     char *array = (char *)calloc(size, sizeof(char));
@@ -97,4 +99,55 @@ void destroy_2d_array(char **arr, int rows)
         free(arr[i]);
     }
     free(arr);
+}
+
+int no_lines_text_file(char *filename)
+{
+    FILE *fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        perror("Text file cannot be opened.");
+        exit(EXIT_FAILURE);
+    }
+
+    int no_lines = 0;
+    int ch;
+    char last_ch = '\n';
+    while (EOF != (ch = fgetc(fp)))
+    {
+        if (ch == '\n' && last_ch != '\n')
+        {
+            ++no_lines;
+        }
+        last_ch = ch;
+    }
+    rewind(fp);
+
+    return no_lines;
+}
+
+char **load_text_file(char *filename, int no_lines)
+{
+    FILE *fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        perror("Cannot open file");
+        exit(EXIT_FAILURE);
+    }
+
+    char **text_file = initialise_2d_array(no_lines, MAX_LINE_LENGTH);
+
+    // Filling the array with each line, stripping blank newlines in source file
+    int i = 0;
+    while (i < no_lines && fgets(text_file[i], MAX_LINE_LENGTH, fp))
+    {
+        if (text_file[i][0] != '\n')
+        {
+            text_file[i][strcspn(text_file[i], "\n")] = '\0';
+            i++;
+        }
+    }
+
+    fclose(fp);
+    return text_file;
 }

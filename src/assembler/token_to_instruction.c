@@ -413,7 +413,7 @@ static void convert_sdt_instruction(token_t *token, instruction_t *instruction, 
                     return;
                 }
             }
-            instruction->rn = ;
+            instruction->rn = readPC();
             // instruction->offset = (stripped_size - (line_no + 2)) * 4;
             instruction->offset = (stripped_size + *no_end_words) * 4 - (line_no * 4) - 8;
             (*no_end_words)++;
@@ -532,7 +532,7 @@ instruction_t *token_to_instruction(token_t *token, word_t *end_words, int *no_e
         case SINGLE_DATA_TRANSFER:
             convert_sdt_instruction(token, instruction, end_words, no_end_words, line_no, stripped_size);
             break;
-        case BRANCH:
+        case BRANCH_2:
             instruction->cond = mnemonic.cond;
             convert_branch_instruction(token, instruction, line_no, stripped_size, symbol_table);
             break;
