@@ -5,8 +5,7 @@
 #include <stdbool.h>
 #include "../global_var.h"
 
-typedef struct
-{
+typedef struct {
     instruction_type_t type;
 
     byte_t cond;     // Condition code (DP, Multiply, SDT, Branch)

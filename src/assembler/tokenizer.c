@@ -2,11 +2,9 @@
 
 #include "tokenizer.h"
 
-token_list_t *create_token_list(void)
-{
-    token_list_t *tokens = (token_list_t *)malloc(sizeof(token_list_t));
-    if (!tokens)
-    {
+token_list_t *create_token_list(void) {
+    token_list_t *tokens = (token_list_t *) malloc(sizeof(token_list_t));
+    if (!tokens) {
         perror("Unable to allocate memory to token list.\n");
         exit(EXIT_FAILURE);
     }
@@ -18,10 +16,8 @@ token_list_t *create_token_list(void)
     return tokens;
 }
 
-void add_token_to_token_list(token_list_t *tokens, token_t *token)
-{
-    if (tokens->head == NULL)
-    {
+void add_token_to_token_list(token_list_t *tokens, token_t *token) {
+    if (tokens->head == NULL) {
         // The linked-list is empty
         tokens->head = token;
         tokens->size++;
@@ -29,28 +25,22 @@ void add_token_to_token_list(token_list_t *tokens, token_t *token)
     }
 
     token_t *curr = tokens->head;
-    while (curr->next != NULL)
-    {
+    while (curr->next != NULL) {
         curr = curr->next;
     }
     curr->next = token;
     tokens->size++;
 }
 
-void destroy_token_list(token_list_t *tokens)
-{
+void destroy_token_list(token_list_t *tokens) {
     token_t *curr = tokens->head;
-    while (curr != NULL)
-    {
+    while (curr != NULL) {
         token_t *tmp = curr;
         curr = curr->next;
 
-        if (tmp->is_label)
-        {
+        if (tmp->is_label) {
             free(tmp->label);
-        }
-        else
-        {
+        } else {
             destroy_2d_array(tmp->operands, tmp->no_operands);
             free(tmp->opcode);
         }
@@ -60,13 +50,11 @@ void destroy_token_list(token_list_t *tokens)
     free(tokens);
 }
 
-static bool is_label(char *instruction)
-{
+static bool is_label(char *instruction) {
     return *(instruction + strlen(instruction) - 1) == ':';
 }
 
-static void *tokenize_label(token_t *token, char *label)
-{
+static void *tokenize_label(token_t *token, char *label) {
     token->is_label = true;
 
     strncpy(token->label, label, MAX_LINE_LENGTH);
@@ -75,8 +63,7 @@ static void *tokenize_label(token_t *token, char *label)
     return token;
 }
 
-static void *tokenize_instruction(token_t *token, char *instruction)
-{
+static void *tokenize_instruction(token_t *token, char *instruction) {
     token->is_label = false;
 
     char *opcode = strtok_r(instruction, " ", &instruction);
@@ -84,35 +71,28 @@ static void *tokenize_instruction(token_t *token, char *instruction)
 
     int i = 0;
     char *curr_token = initialise_array(MAX_LINE_LENGTH);
-    do
-    {
+    do {
 
         // Strip off leading whitespace/separators on token
-        while (*instruction == ' ' || *instruction == ',' || *instruction == ']')
-        {
+        while (*instruction == ' ' || *instruction == ',' || *instruction == ']') {
             instruction++;
         }
 
         char *curr_substr;
-        if (*instruction == '[')
-        {
+        if (*instruction == '[') {
             curr_substr = strtok_r(instruction, "]", &instruction);
 
-            if (curr_substr == NULL)
-            {
+            if (curr_substr == NULL) {
                 break;
             }
 
             strcpy(curr_token, curr_substr);
             char close_bracket = ']';
             strncat(curr_token, &close_bracket, 1);
-        }
-        else
-        {
+        } else {
             curr_substr = strtok_r(instruction, " ,", &instruction);
 
-            if (curr_substr == NULL)
-            {
+            if (curr_substr == NULL) {
                 break;
             }
 
@@ -128,16 +108,13 @@ static void *tokenize_instruction(token_t *token, char *instruction)
 }
 
 // Processes instructions into tokens and adds to list of tokens
-void tokenize(token_list_t *tokens, char **instructions, int no_instructions, symbol_table_t *table)
-{
+void tokenize(token_list_t *tokens, char **instructions, int no_instructions, symbol_table_t *table) {
     unsigned int current_address = 0;
 
-    for (int i = 0; i < no_instructions; i++)
-    {
-        if (instructions[i][0] != '\n')
-        {
+    for (int i = 0; i < no_instructions; i++) {
+        if (instructions[i][0] != '\n') {
             token_t *token = malloc(sizeof(token_t));
-            *token = (token_t){
+            *token = (token_t) {
                     .is_label = false,
                     .label = NULL,
                     .opcode = NULL,
@@ -145,8 +122,7 @@ void tokenize(token_list_t *tokens, char **instructions, int no_instructions, sy
                     .no_operands = 0,
                     .next = NULL};
 
-            if (!token)
-            {
+            if (!token) {
                 perror("Unable to allocate memory to token.\n");
                 exit(EXIT_FAILURE);
             }
@@ -155,14 +131,11 @@ void tokenize(token_list_t *tokens, char **instructions, int no_instructions, sy
             token->opcode = initialise_array(MAX_LINE_LENGTH);
             token->operands = initialise_2d_array(MAX_NUMBER_OF_OPERANDS, MAX_LINE_LENGTH);
 
-            if (is_label(instructions[i]))
-            {
+            if (is_label(instructions[i])) {
                 tokenize_label(token, instructions[i]);
                 tokens->no_labels++;
                 add_label_to_symbol_table(table, token->label, current_address);
-            }
-            else
-            {
+            } else {
                 tokenize_instruction(token, instructions[i]);
                 current_address += INSTRUCTION_ADDRESS_SIZE;
             }

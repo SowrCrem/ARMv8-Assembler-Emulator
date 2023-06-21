@@ -2,6 +2,7 @@
 
 #ifndef ARMV8_47_GLOBAL_VAR_H
 #define ARMV8_47_GLOBAL_VAR_H
+
 #include <stdint.h>
 
 #define DEBUG true // Enable debugging output
@@ -33,8 +34,7 @@ typedef uint8_t byte_t;     // Alias for a byte
 typedef uint16_t address_t; // Alias for a memory address of 16 bits
 typedef uint32_t word_t;    // Alias for a word of 32 bits
 
-typedef enum
-{
+typedef enum {
     DATA_PROCESSING,      // Data Processing instruction
     MULTIPLY,             // Multiply instruction
     SINGLE_DATA_TRANSFER, // Single Data Transfer instruction
@@ -45,8 +45,7 @@ typedef enum
     SPECIAL               // Special instruction (lsl, andeq)
 } instruction_type_t;
 
-typedef enum
-{
+typedef enum {
     AND = 0x0, // Logical AND
     EOR = 0x1, // Logical XOR
     SUB = 0x2, // Subtract
@@ -59,8 +58,7 @@ typedef enum
     MOV = 0xD, // Copy to register
 } opcode_t;
 
-typedef enum
-{
+typedef enum {
     EQ = 0x0, // Equal
     NE = 0x1, // Not equal
     GE = 0xA, // Greater or equal
@@ -70,8 +68,7 @@ typedef enum
     AL = 0xE, // Always
 } cond_t;
 
-typedef enum
-{
+typedef enum {
     LSL = 0x0, // Logical left shift
     LSR = 0x1, // Logical right shift
     ASR = 0x2, // Arithmetic right shift

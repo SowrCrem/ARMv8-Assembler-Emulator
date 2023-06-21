@@ -245,8 +245,6 @@ int main(int argc, char **argv) {
         }
     }
 
-
-
     // Final writing of file
     if (argc == 2) {
         output_stdout();

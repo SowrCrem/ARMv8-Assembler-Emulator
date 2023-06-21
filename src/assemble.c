@@ -4,10 +4,8 @@
 #include "assembler/token_to_instruction.h"
 #include "assembler/encoder.h"
 
-int main(int argc, char **argv)
-{
-    if (argc != 3)
-    {
+int main(int argc, char **argv) {
+    if (argc != 3) {
         // Only accept two arguments (input program file)
         fprintf(stderr, "Invalid number of arguments.\n");
         return EXIT_FAILURE;
@@ -20,11 +18,9 @@ int main(int argc, char **argv)
     int no_lines = no_lines_text_file(source_file);
     char **text_file = load_text_file(source_file, no_lines);
 
-    if (DEBUG)
-    {
+    if (DEBUG) {
         printf("[Text File]: %d line(s)\n", no_lines);
-        for (int i = 0; i < no_lines; i++)
-        {
+        for (int i = 0; i < no_lines; i++) {
             printf("%d: %s\n", i, text_file[i]);
         }
         printf("\n");
@@ -36,23 +32,17 @@ int main(int argc, char **argv)
 
     tokenize(tokens, text_file, no_lines, symbol_table);
 
-    if (DEBUG)
-    {
+    if (DEBUG) {
         printf("===== PASS 1 =====\n");
         printf("[Token List]: %d token(s), %d label(s)\n", tokens->size, tokens->no_labels);
 
         token_t *curr_debug_token = tokens->head;
-        while (curr_debug_token != NULL)
-        {
-            if (curr_debug_token->is_label)
-            {
+        while (curr_debug_token != NULL) {
+            if (curr_debug_token->is_label) {
                 printf("Label: %s\n", curr_debug_token->label);
-            }
-            else
-            {
+            } else {
                 printf("Opcode: %s\n", curr_debug_token->opcode);
-                for (int i = 0; i < curr_debug_token->no_operands; i++)
-                {
+                for (int i = 0; i < curr_debug_token->no_operands; i++) {
                     printf("    Operand %d: %s\n", i, curr_debug_token->operands[i]);
                 }
             }
@@ -62,8 +52,7 @@ int main(int argc, char **argv)
 
         printf("[Symbol Table]: %d label(s)\n", symbol_table->size);
         symbol_table_node_t *curr_debug_node = symbol_table->head;
-        while (curr_debug_node != NULL)
-        {
+        while (curr_debug_node != NULL) {
             printf("Label: %s\n", curr_debug_node->label);
             printf("Address: 0x%x\n", curr_debug_node->address);
             printf("\n");
@@ -74,8 +63,7 @@ int main(int argc, char **argv)
 
     // PASS 2
     int no_instructions = tokens->size - tokens->no_labels;
-    if (DEBUG)
-    {
+    if (DEBUG) {
         printf("===== PASS 2 =====\n");
 
         printf("Number of instructions: %d\n", no_instructions);
@@ -89,23 +77,24 @@ int main(int argc, char **argv)
     unsigned int line_no = 0x0;
 
     token_t *curr_token = tokens->head;
-    while (curr_token != NULL)
-    {
-        if (!curr_token->is_label)
-        {
-            instruction = token_to_instruction(curr_token, end_words, &no_end_words, line_no, no_instructions, symbol_table);
+    while (curr_token != NULL) {
+        if (!curr_token->is_label) {
+            instruction = token_to_instruction(curr_token, end_words, &no_end_words, line_no, no_instructions,
+                                               symbol_table);
 
-            if (DEBUG)
-            {
+            if (DEBUG) {
                 printf("Registers:\n");
-                printf("    Rn: %x\n    Rs: %x\n    Rd: %x\n    Rm: %x\n", instruction->rn, instruction->rs, instruction->rd, instruction->rm);
+                printf("    Rn: %x\n    Rs: %x\n    Rd: %x\n    Rm: %x\n", instruction->rn, instruction->rs,
+                       instruction->rd, instruction->rm);
                 printf("Shift type: %d\n", instruction->shift_type);
                 printf("Shift amount: %d\n", instruction->shift_amount);
                 printf("Offset: 0x%x (%d)\n", instruction->offset, instruction->offset);
                 printf("Imm: 0x%x, (%d)\n", instruction->imm, instruction->imm);
 
                 printf("Flags:\n");
-                printf("    I: %d\n    A: %d\n    S: %d\n    L: %d\n    P: %d\n    U: %d\n", instruction->flag_i, instruction->flag_a, instruction->flag_s, instruction->flag_l, instruction->flag_p, instruction->flag_u);
+                printf("    I: %d\n    A: %d\n    S: %d\n    L: %d\n    P: %d\n    U: %d\n", instruction->flag_i,
+                       instruction->flag_a, instruction->flag_s, instruction->flag_l, instruction->flag_p,
+                       instruction->flag_u);
                 printf("Word at bottom: %x \n", end_words[0]);
                 printf("\n");
             }
@@ -117,11 +106,9 @@ int main(int argc, char **argv)
     }
 
     // Writing to output file
-    if (DEBUG)
-    {
+    if (DEBUG) {
         printf("Binary:\n");
-        for (unsigned int i = 0; i < no_instructions; i++)
-        {
+        for (unsigned int i = 0; i < no_instructions; i++) {
             printf("%08x: %08x\n", 4 * i, binary[i]);
         }
         printf("\n");
@@ -129,26 +116,21 @@ int main(int argc, char **argv)
 
     write_binary_file(binary, output_file, no_instructions);
 
-    if (DEBUG)
-    {
+    if (DEBUG) {
         printf("Written instructions to binary file.\n");
         printf("\n");
     }
 
     // Writing end-words to end of file
     FILE *output_fp = fopen(output_file, "ab");
-    if (output_fp == NULL)
-    {
+    if (output_fp == NULL) {
         perror("Cannot open output file");
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < no_end_words; i++)
-    {
+    for (int i = 0; i < no_end_words; i++) {
         fwrite(&end_words[i], sizeof(word_t), 1, output_fp); // TODO: FIX - Causes valgrind error on end_words
-
-        if (DEBUG)
-        {
+        if (DEBUG) {
             printf("End word %d: %x\n", i, end_words[i]);
         }
     }
