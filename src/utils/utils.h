@@ -23,4 +23,9 @@ char *initialise_array(unsigned int size);
 char **initialise_2d_array(unsigned int rows, unsigned int cols);
 void destroy_2d_array(char **arr, int rows);
 
+int no_lines_text_file(char *filename);
+char **load_text_file(char *filename, int no_lines);
+
+void write_binary_file(word_t *binary, char *filename, int no_instructions);
+
 #endif //ARMV8_47_UTILS_H

@@ -151,3 +151,20 @@ char **load_text_file(char *filename, int no_lines)
     fclose(fp);
     return text_file;
 }
+
+void write_binary_file(word_t *binary, char *filename, int no_instructions)
+{
+    FILE *fp = fopen(filename, "wb");
+    if (fp == NULL)
+    {
+        perror("Cannot open file");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < no_instructions; i++)
+    {
+        fwrite(&binary[i], sizeof(word_t), 1, fp);
+    }
+
+    fclose(fp);
+}

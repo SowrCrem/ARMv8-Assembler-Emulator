@@ -4,7 +4,7 @@
 #define ARMV8_47_GLOBAL_VAR_H
 #include <stdint.h>
 
-#define DEBUG false // Enable debugging output
+#define DEBUG true // Enable debugging output
 
 // emulate.c constants
 #define NO_ELEMENTS ((int) pow(2,21))       // Used to store the size of memory
