@@ -1,0 +1,1 @@
+extern void branch(uint32_t instruction);
