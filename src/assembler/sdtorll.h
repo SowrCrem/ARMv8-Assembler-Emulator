@@ -1,1 +1,0 @@
-extern void loadorstore(uint32_t instruction);
