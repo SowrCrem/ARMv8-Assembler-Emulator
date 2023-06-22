@@ -1,5 +1,5 @@
 #include <math.h>
-#include "global_var.h"
+#include "global.h"
 #include "utils/utils.h"
 #include "utils/storage.h"
 #include "instructions/dpImmediate.h"
