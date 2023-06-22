@@ -1,5 +1,6 @@
 #include "encode.h"
 
+
 static uint32_t encode_op(op_t op) {
     switch (op) {
         case OP_ADD:
@@ -204,3 +205,36 @@ static uint32_t encode_spec(inst_t *inst) {
 
     return code;
 };
+
+static uint32_t encode(inst_t *inst) {
+    if (inst->type == INST_ARII) {
+        return encode_arii(inst);
+    } else if (inst->type == INST_ARIR) {
+        return encode_arir(inst);
+    } else if (inst->type == INST_WDMV) {
+        return encode_wdmv(inst);
+    } else if (inst->type == INST_LOGI) {
+        return encode_logi(inst);
+    } else if (inst->type == INST_MULT) {
+        return encode_mult(inst);
+    } else if (inst->type == INST_BUNC) {
+        return encode_bunc(inst);
+    } else if (inst->type == INST_BCND) {
+        return encode_bcnd(inst);
+    } else if (inst->type == INST_BREG) {
+        return encode_breg(inst);
+    } else if (inst->type == INST_SDTI) {
+        return encode_sdti(inst);
+    } else if (inst->type == INST_SDTU) {
+        return encode_sdtu(inst);
+    } else if (inst->type == INST_SDTR) {
+        return encode_sdtr(inst);
+    } else if (inst->type == INST_LDLT) {
+        return encode_ldlt(inst);
+    } else if (inst->type == INST_SPEC) {
+        return encode_spec(inst);
+    } else {
+        fprintf(stderr, "unknown inst->type: %d\n", inst->type);
+        assert(false);
+    }
+}
