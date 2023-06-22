@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "utils.h"
 #include <stdlib.h>
+#include <stdbool.h>
 #include "addTransaction.h"
+#include "showTransaction.h"
 
 
 #define ARRAY_LENGTH(arr) (sizeof(arr) / sizeof((arr)[0]))
@@ -21,31 +23,36 @@ int main() {
     char** names = s1.array;
     int noPeople = s1.no;
 
-    printf("What do you want to do\n1:Add a transaction\n2:Delete a transaction\n3:Show all transactions\n4:Settle bills ");
+    while (true) {
 
-    char toDo[1];
-    scanf("%s", toDo);
+        printf("What do you want to do\n1:Add a transaction\n2:Delete a transaction\n3:Show all transactions\n4:Settle bills ");
 
-    char Stringamount[MAX_REFERENCE_LENGTH];
-    int amount;
-    char paidby[MAX_NAME_LENGTH];
-    char splitBetween[MAX_REFERENCE_LENGTH];
-    char reference[MAX_REFERENCE_LENGTH];
+        char toDo[1];
+        scanf("%s", toDo);
 
-    switch (atoi(toDo)) {
-        case 1:
-            printf("How much was paid ");
-            scanf("%s", Stringamount);
-            amount = atoi(Stringamount);
-            printf("How paid it ");
-            scanf("%s", paidby);
-            printf("Who has it split between (seperate names with commas) ");
-            scanf("%s", splitBetween);
-            printf("What is the reference ");
-            scanf("%s", reference);
-            myledger = addTransaction(amount, paidby, splitBetween, reference, myledger);
-        
+        char Stringamount[MAX_REFERENCE_LENGTH];
+        int amount;
+        char paidby[MAX_NAME_LENGTH];
+        char splitBetween[MAX_REFERENCE_LENGTH];
+        char reference[MAX_REFERENCE_LENGTH];
 
+        switch (atoi(toDo)) {
+            case 1:
+                printf("How much was paid ");
+                scanf("%s", Stringamount);
+                amount = atoi(Stringamount);
+                printf("How paid it ");
+                scanf("%s", paidby);
+                printf("Who has it split between (seperate names with commas) ");
+                scanf("%s", splitBetween);
+                printf("What is the reference ");
+                scanf("%s", reference);
+                myledger = addTransaction(amount, paidby, splitBetween, reference, myledger);
+                break;
+            case 2:
+                showTransactions(myledger);
+
+        }
     }
 //    printf("%d",myledger.numTransactions);
 //    for (int i = 0; i < myledger.numTransactions; i++) {
