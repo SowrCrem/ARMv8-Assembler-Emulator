@@ -6,54 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "types.h"
+#include "parse.h"
+#include "symbol_table.h"
+#include "encode.h"
 
 // main functions
 static int assemble(FILE *fin, FILE *fout);
 static int pass1(FILE *fin, context_t *ctx);
 static int pass2(FILE *fin, FILE *fout, context_t *ctx);
-static uint32_t encode(inst_t *inst);
-
-// functions of assemble context & symbol tables
-static void add_symbol(context_t *ctx, const char *name);
-static uint64_t lookup_symbol(const context_t *ctx, const char *name);
-static void init_context(context_t *ctx);
-static void free_context(context_t *ctx);
-
-// mnemonics' parsers
-static int parse_add_sub(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_cmp(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_neg(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_and_bic_or(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_tst(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_movknz(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_mov(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_mvn(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_madd_msub(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_mul_mneg(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_b(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_br(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_bcond(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_sdr_ldr(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_nop(fields_t *fields, inst_t *inst, context_t *ctx);
-static int parse_int(fields_t *fields, inst_t *inst, context_t *ctx);
-
-// encode functions
-static uint32_t encode_arii(inst_t *inst);
-static uint32_t encode_arir(inst_t *inst);
-static uint32_t encode_wdmv(inst_t *inst);
-static uint32_t encode_logi(inst_t *inst);
-static uint32_t encode_mult(inst_t *inst);
-static uint32_t encode_bunc(inst_t *inst);
-static uint32_t encode_bcnd(inst_t *inst);
-static uint32_t encode_breg(inst_t *inst);
-static uint32_t encode_sdti(inst_t *inst);
-static uint32_t encode_sdtu(inst_t *inst);
-static uint32_t encode_sdtr(inst_t *inst);
-static uint32_t encode_ldlt(inst_t *inst);
-static uint32_t encode_spec(inst_t *inst);
-
-// helper functions
-static int split_line(char line[LINE_MAX], fields_t *fields);
 
 // map of mneomonics and their parsers
 const static parser_t parsers[] = {
@@ -250,7 +210,3 @@ static int pass2(FILE *fin, FILE *fout, context_t *ctx) {
 
     return ret;
 }
-
-//
-// functions for context and symbol tables
-//
