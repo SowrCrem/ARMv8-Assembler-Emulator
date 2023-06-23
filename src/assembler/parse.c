@@ -1,9 +1,13 @@
 #include "parse.h"
+#include <string.h>
+#include <stdbool.h>
+#include "symbol_table.h"
+#include <assert.h>
 
 //
 // mnemonics' parsers
 //
-static int parse_addr(int32_t *offset, char *f_lit, context_t *ctx) {
+int parse_addr(int32_t *offset, char *f_lit, context_t *ctx) {
     int32_t addr;
     if (f_lit[0] == '#') {
         addr = atoi(f_lit + 1);
@@ -15,7 +19,7 @@ static int parse_addr(int32_t *offset, char *f_lit, context_t *ctx) {
     return 0;
 }
 
-static int parse_number(long *num, char *s) {
+int parse_number(long *num, char *s) {
     int base = 10;
     if (strlen(s) > 2 && s[1] == 'x') {
         s += 2;
@@ -26,7 +30,7 @@ static int parse_number(long *num, char *s) {
     return 0;
 }
 
-static int parse_reg(uint8_t *r, char *reg, bool *sf) {
+int parse_reg(uint8_t *r, char *reg, bool *sf) {
     if (sf) {
         *sf = (reg[0] == 'x');
     }
@@ -40,7 +44,7 @@ static int parse_reg(uint8_t *r, char *reg, bool *sf) {
     return 0;
 }
 
-static int parse_imm(uint32_t *u32, char *imm) {
+int parse_imm(uint32_t *u32, char *imm) {
     long num;
     int ret = parse_number(&num, imm + 1);
     if (ret == 0) {
@@ -50,7 +54,7 @@ static int parse_imm(uint32_t *u32, char *imm) {
     return ret;
 }
 
-static int parse_simm(int32_t *i32, char *imm) {
+int parse_simm(int32_t *i32, char *imm) {
     long num;
     int ret = parse_number(&num, imm + 1);
     if (ret == 0) {
@@ -60,7 +64,7 @@ static int parse_simm(int32_t *i32, char *imm) {
     return ret;
 }
 
-static int parse_imm_u16(uint16_t *u16, char *imm) {
+int parse_imm_u16(uint16_t *u16, char *imm) {
     uint32_t u32;
     int ret = parse_imm(&u32, imm);
     if (ret == 0) {
@@ -69,7 +73,7 @@ static int parse_imm_u16(uint16_t *u16, char *imm) {
     return ret;
 }
 
-static int parse_imm_u8(uint8_t *u8, char *imm) {
+int parse_imm_u8(uint8_t *u8, char *imm) {
     uint32_t u32;
     int ret = parse_imm(&u32, imm);
     if (ret == 0) {
@@ -78,7 +82,7 @@ static int parse_imm_u8(uint8_t *u8, char *imm) {
     return ret;
 }
 
-static int parse_shift(shift_t *sh, char *sh_type, char *sh_imm) {
+int parse_shift(shift_t *sh, char *sh_type, char *sh_imm) {
     if (sh_type == NULL || sh_imm == NULL) {
         sh->type = SH_LSL;
         sh->imm = 0;
@@ -102,7 +106,7 @@ static int parse_shift(shift_t *sh, char *sh_type, char *sh_imm) {
     return parse_imm_u8(&sh->imm, sh_imm);
 }
 
-static int parse_add_sub(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_add_sub(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
 
@@ -145,7 +149,7 @@ static int parse_add_sub(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_cmp(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_cmp(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
 
@@ -183,7 +187,7 @@ static int parse_cmp(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_neg(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_neg(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
 
@@ -220,7 +224,7 @@ static int parse_neg(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_and_bic_or(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_and_bic_or(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
 
@@ -247,7 +251,7 @@ static int parse_and_bic_or(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_tst(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_tst(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
 
@@ -272,7 +276,7 @@ static int parse_tst(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_movknz(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_movknz(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
 
@@ -296,7 +300,7 @@ static int parse_movknz(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_mov(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_mov(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
 
@@ -318,7 +322,7 @@ static int parse_mov(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_mvn(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_mvn(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
     inst->type = INST_LOGI;
@@ -341,7 +345,7 @@ static int parse_mvn(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_madd_msub(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_madd_msub(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
     inst->type = INST_MULT;
@@ -366,7 +370,7 @@ static int parse_madd_msub(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_mul_mneg(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_mul_mneg(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
     inst->type = INST_MULT;
@@ -388,7 +392,7 @@ static int parse_mul_mneg(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_b(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_b(fields_t *fields, inst_t *inst, context_t *ctx) {
     int ret = 0;
     inst->type = INST_BUNC;
 
@@ -399,7 +403,7 @@ static int parse_b(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_bcond(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_bcond(fields_t *fields, inst_t *inst, context_t *ctx) {
     int ret = 0;
     inst->type = INST_BCND;
 
@@ -428,7 +432,7 @@ static int parse_bcond(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_br(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_br(fields_t *fields, inst_t *inst, context_t *ctx) {
     (void)ctx;
     int ret = 0;
     inst->type = INST_BREG;
@@ -439,7 +443,7 @@ static int parse_br(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_sdr_ldr(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_sdr_ldr(fields_t *fields, inst_t *inst, context_t *ctx) {
     int ret = 0;
 
     // determine the type of load/store
@@ -515,7 +519,7 @@ static int parse_sdr_ldr(fields_t *fields, inst_t *inst, context_t *ctx) {
     return ret;
 }
 
-static int parse_nop(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_nop(fields_t *fields, inst_t *inst, context_t *ctx) {
     inst->type = INST_SPEC;
     (void)fields;
     (void)inst;
@@ -523,7 +527,7 @@ static int parse_nop(fields_t *fields, inst_t *inst, context_t *ctx) {
     return 0;
 }
 
-static int parse_int(fields_t *fields, inst_t *inst, context_t *ctx) {
+int parse_int(fields_t *fields, inst_t *inst, context_t *ctx) {
     inst->type = INST_SPEC;
     (void)ctx;
     char *f_data = fields->fields[1];

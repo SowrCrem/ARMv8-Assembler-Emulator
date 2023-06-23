@@ -7,35 +7,6 @@
 #include <string.h>
 #include "types.h"
 
-//
-// structures for assemble only
-//
-// struct for symbol tables
-typedef struct {
-    int count;
-    char **names;
-    uint64_t *addrs;
-} sym_table_t;
-
-// strcut for assemble's context
-typedef struct {
-    sym_table_t tbl;
-    uint64_t pc;
-} context_t;
-
-// struct for fields after a line split
-typedef struct {
-    int count;
-    char *fields[FIELDS_MAX];
-} fields_t;
-
-// struct for entries of mnemonic parsers
-typedef struct {
-    char *mnemonic;
-    op_t op;
-    int (*parse)(fields_t *fields, inst_t *inst, context_t *ctx);
-} parser_t;
-
 // main functions
 static int assemble(FILE *fin, FILE *fout);
 static int pass1(FILE *fin, context_t *ctx);

@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-static int parse_addr(int32_t *offset, char *f_lit, context_t *ctx);
-static int parse_number(long *num, char *s);
+extern int parse_addr(int32_t *offset, char *f_lit, context_t *ctx);
+extern int parse_number(long *num, char *s);
 
 #endif //ARMV8_47_PARSE_H

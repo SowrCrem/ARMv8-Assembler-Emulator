@@ -29,7 +29,7 @@ static void add_symbol(context_t *ctx, const char *name) {
     ctx->tbl.addrs[ctx->tbl.count - 1] = ctx->pc;
 }
 
-static uint64_t lookup_symbol(const context_t *ctx, const char *name) {
+uint64_t lookup_symbol(const context_t *ctx, const char *name) {
     for (int i = 0; i < ctx->tbl.count; i++) {
         if (strcmp(ctx->tbl.names[i], name) == 0) {
             return ctx->tbl.addrs[i];
