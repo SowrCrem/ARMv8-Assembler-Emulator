@@ -3,6 +3,7 @@
 //
 #ifndef EXT_UTILS_H
 #define EXT_UTILS_H
+#include <stdbool.h>
 
 #define MAXNOPPL 10
 #define MAX_NAME_LENGTH 20
@@ -27,8 +28,16 @@ typedef struct {
     int no;
 } stringArray;
 
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    int balance;
+} nameBalance;
+
+
 stringArray splitStringByComma(const char* string, char* array[]);
 
-int sizeStringArray(char* strings[]);
+int sizeStringArray(char strings[][MAX_NAME_LENGTH]);
+
+bool isStringInList(const char* target, const char strings[][MAX_NAME_LENGTH], int numString);
 
 #endif

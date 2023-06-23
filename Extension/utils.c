@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAXNOPPL 10
 #define MAX_NAME_LENGTH 20
@@ -26,6 +27,11 @@ typedef struct {
     char** array;
     int no;
 } stringArray;
+
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    int balance;
+} nameBalance;
 
 stringArray splitStringByComma(const char* string, char* array[]) {
     int elementCount = 0;
@@ -58,7 +64,7 @@ stringArray splitStringByComma(const char* string, char* array[]) {
     return toReturn;
 }
 
-int sizeStringArray(char* strings[]) {
+int sizeStringArray(const char strings[][MAX_NAME_LENGTH]) {
     int count = 0;
 
     while (strings[count] != NULL) {
@@ -67,4 +73,14 @@ int sizeStringArray(char* strings[]) {
     }
     return count;
 }
+
+bool isStringInList(const char* target, const char strings[][MAX_NAME_LENGTH], int numStrings) {
+    for(int i = 0; i < numStrings; i++) {
+        if (strcmp(target, strings[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 

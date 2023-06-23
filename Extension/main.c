@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "addTransaction.h"
 #include "showTransaction.h"
+#include "settleBills.h"
 
 
 #define ARRAY_LENGTH(arr) (sizeof(arr) / sizeof((arr)[0]))
@@ -22,10 +23,10 @@ int main() {
     stringArray s1 = splitStringByComma(stringPeople, EmptyArrayNames);
     char** names = s1.array;
     int noPeople = s1.no;
+    bool end = false;
+    while (!end) {
 
-    while (true) {
-
-        printf("What do you want to do\n1:Add a transaction\n2:Delete a transaction\n3:Show all transactions\n4:Settle bills ");
+        printf("What do you want to do\n1:Add a transaction\n2:Show all transactions\n3:Settle bills\n4:Quit");
 
         char toDo[1];
         scanf("%s", toDo);
@@ -35,6 +36,7 @@ int main() {
         char paidby[MAX_NAME_LENGTH];
         char splitBetween[MAX_REFERENCE_LENGTH];
         char reference[MAX_REFERENCE_LENGTH];
+        char perspective[MAX_NAME_LENGTH];
 
         switch (atoi(toDo)) {
             case 1:
@@ -51,7 +53,12 @@ int main() {
                 break;
             case 2:
                 showTransactions(myledger);
-
+            case 3:
+                printf("Who do you want to see who owes money ");
+                scanf("%s", perspective);
+                settleBills(myledger, names, noPeople, perspective);
+            case 4:
+                end = true;
         }
     }
 //    printf("%d",myledger.numTransactions);
