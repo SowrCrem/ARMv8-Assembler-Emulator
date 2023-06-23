@@ -1,7 +1,9 @@
 #include "encode.h"
+#include <assert.h>
+#include <stdbool.h>
 
 
-static uint32_t encode_op(op_t op) {
+uint32_t encode_op(op_t op) {
     switch (op) {
         case OP_ADD:
         case OP_BIC:
@@ -31,7 +33,7 @@ static uint32_t encode_op(op_t op) {
     }
 }
 
-static uint32_t encode_arii(inst_t *inst) {
+uint32_t encode_arii(inst_t *inst) {
 
     uint32_t op = encode_op(inst->op);
     uint32_t sf = (inst->arii.sf ? 1 : 0);
@@ -45,7 +47,7 @@ static uint32_t encode_arii(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_arir(inst_t *inst) {
+uint32_t encode_arir(inst_t *inst) {
     uint32_t op = encode_op(inst->op);
     uint32_t sf = (inst->arir.sf ? 1 : 0);
     uint32_t sh_type = inst->arir.sh.type;
@@ -59,7 +61,7 @@ static uint32_t encode_arir(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_wdmv(inst_t *inst) {
+uint32_t encode_wdmv(inst_t *inst) {
     uint32_t op = encode_op(inst->op);
     uint32_t sf = (inst->wdmv.sf ? 1 : 0);
     uint32_t sh_imm = inst->wdmv.sh.imm / 16;
@@ -71,7 +73,7 @@ static uint32_t encode_wdmv(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_logi(inst_t *inst) {
+uint32_t encode_logi(inst_t *inst) {
     uint32_t op = encode_op(inst->op);
     uint32_t sf = (inst->logi.sf ? 1 : 0);
     uint32_t sh_type = inst->logi.sh.type;
@@ -89,7 +91,7 @@ static uint32_t encode_logi(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_mult(inst_t *inst) {
+uint32_t encode_mult(inst_t *inst) {
     uint32_t op = encode_op(inst->op);
     uint32_t sf = (inst->mult.sf ? 1 : 0);
     uint32_t rm = inst->mult.rm;
@@ -108,7 +110,7 @@ uint32_t set_bits(uint32_t old, int hi, int lo, uint32_t val) {
     return ((val & mask) << lo) | (old & (~(mask << lo)));
 }
 
-static uint32_t encode_bunc(inst_t *inst) {
+uint32_t encode_bunc(inst_t *inst) {
     uint32_t offset = (uint32_t)(inst->bunc.offset / 4);
 
     uint32_t code = BUNC_BITS;
@@ -117,7 +119,7 @@ static uint32_t encode_bunc(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_bcnd(inst_t *inst) {
+uint32_t encode_bcnd(inst_t *inst) {
     uint32_t offset = (uint32_t)(inst->bcnd.offset / 4);
     uint32_t cond = inst->bcnd.cond;
 
@@ -127,7 +129,7 @@ static uint32_t encode_bcnd(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_breg(inst_t *inst) {
+uint32_t encode_breg(inst_t *inst) {
     uint32_t xn = (uint32_t)(inst->breg.xn);
 
     uint32_t code = BREG_BITS | (xn << 5);
@@ -135,7 +137,7 @@ static uint32_t encode_breg(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_sdti(inst_t *inst) {
+uint32_t encode_sdti(inst_t *inst) {
     uint32_t sf = (inst->sdti.sf ? 1 : 0);
     uint32_t op = encode_op(inst->op);
     uint32_t simm = (uint32_t)(inst->sdti.simm);
@@ -150,7 +152,7 @@ static uint32_t encode_sdti(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_sdtu(inst_t *inst) {
+uint32_t encode_sdtu(inst_t *inst) {
     uint32_t sf = (inst->sdtu.sf ? 1 : 0);
     uint32_t op = encode_op(inst->op);
     uint32_t imm = inst->sdtu.imm / (sf ? 8 : 4);
@@ -163,7 +165,7 @@ static uint32_t encode_sdtu(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_sdtr(inst_t *inst) {
+uint32_t encode_sdtr(inst_t *inst) {
     uint32_t sf = (inst->sdtr.sf ? 1 : 0);
     uint32_t op = encode_op(inst->op);
     uint32_t xm = inst->sdtr.xm;
@@ -176,7 +178,7 @@ static uint32_t encode_sdtr(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_ldlt(inst_t *inst) {
+uint32_t encode_ldlt(inst_t *inst) {
     uint32_t sf = (inst->ldlt.sf ? 1 : 0);
     uint32_t literal = (uint32_t)(inst->ldlt.literal / 4);
     uint32_t rt = inst->ldlt.rt;
@@ -187,7 +189,7 @@ static uint32_t encode_ldlt(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode_spec(inst_t *inst) {
+uint32_t encode_spec(inst_t *inst) {
     uint32_t code;
     switch (inst->op) {
         case OP_NOP:
@@ -206,7 +208,7 @@ static uint32_t encode_spec(inst_t *inst) {
     return code;
 };
 
-static uint32_t encode(inst_t *inst) {
+uint32_t encode(inst_t *inst) {
     if (inst->type == INST_ARII) {
         return encode_arii(inst);
     } else if (inst->type == INST_ARIR) {
