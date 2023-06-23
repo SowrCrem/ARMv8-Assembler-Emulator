@@ -26,7 +26,7 @@ int main() {
     bool end = false;
     while (!end) {
 
-        printf("What do you want to do\n1:Add a transaction\n2:Show all transactions\n3:Settle bills\n4:Quit");
+        printf("What do you want to do\n1:Add a transaction\n2:Show all transactions\n3:Settle bills\n4:Quit"  );
 
         char toDo[1];
         scanf("%s", toDo);
@@ -43,7 +43,7 @@ int main() {
                 printf("How much was paid ");
                 scanf("%s", Stringamount);
                 amount = atoi(Stringamount);
-                printf("How paid it ");
+                printf("Who paid it ");
                 scanf("%s", paidby);
                 printf("Who has it split between (seperate names with commas) ");
                 scanf("%s", splitBetween);
