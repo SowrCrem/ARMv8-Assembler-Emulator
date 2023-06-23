@@ -16,6 +16,7 @@ typedef struct {
     char paidby[MAX_NAME_LENGTH];
     char split_between[MAXNOPPL][MAX_NAME_LENGTH];
     char reference[MAX_REFERENCE_LENGTH];
+    int noSplitWith;
 } Transaction;
 
 typedef struct {

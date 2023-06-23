@@ -14,6 +14,7 @@ Ledger addTransaction(int amount, char paidby[], char splitBetween[], char refer
     char** splitnames = pplSplitbetween.array;
     int nosplitwith = pplSplitbetween.no;
     Transaction t1;
+    t1.noSplitWith= nosplitwith;
     t1.amount = amount;
     strcpy(t1.paidby, paidby);
     for (int i = 0; i < nosplitwith; ++i) {
